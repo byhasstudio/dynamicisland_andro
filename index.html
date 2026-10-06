@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8defc">
+<title>Dynamic Island</title>
+<style>
+  :root { --text:#1d1d24; --sub:#6b6b78; --glass:rgba(255,255,255,.55); --line:rgba(255,255,255,.75); --accent:#7c5cff; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; }
+  body { min-height:100vh; color:var(--text); font-family:system-ui,-apple-system,Roboto,sans-serif;
+         padding:calc(env(safe-area-inset-top,0px) + 90px) 16px calc(env(safe-area-inset-bottom,0px) + 40px);
+         background:linear-gradient(160deg,#e8defc 0%,#d6ecff 45%,#ffe3ee 100%) fixed; }
+  body::before,body::after { content:""; position:fixed; z-index:-1; border-radius:50%; filter:blur(60px); opacity:.7; }
+  body::before { width:260px; height:260px; background:#cdb4ff; top:-60px; left:-80px; }
+  body::after { width:280px; height:280px; background:#ffc8dd; bottom:-80px; right:-90px; }
+  main { max-width:480px; margin:0 auto; }
+  h1 { font-size:30px; margin:0 4px 2px; letter-spacing:-.5px; }
+  .tag { margin:0 4px 18px; color:var(--sub); font-size:14px; }
+  .card { background:var(--glass); border:1px solid var(--line); border-radius:24px; padding:16px; margin-bottom:14px;
+          -webkit-backdrop-filter:blur(22px) saturate(160%); backdrop-filter:blur(22px) saturate(160%);
+          box-shadow:0 8px 30px rgba(90,70,160,.10); }
+  .card h2 { font-size:13px; text-transform:uppercase; letter-spacing:.8px; color:var(--sub); margin:0 0 10px; font-weight:600; }
+  .btns { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+  button { border:0; border-radius:14px; padding:12px 8px; font-size:14px; font-weight:600; color:var(--text);
+           background:rgba(255,255,255,.8); box-shadow:0 2px 8px rgba(0,0,0,.07); transition:transform .12s; }
+  button:active { transform:scale(.96); }
+  button.primary { width:100%; background:linear-gradient(135deg,#8f6bff,#6c8bff); color:#fff; font-size:15px; }
+  input[type=text] { width:100%; border:1px solid rgba(0,0,0,.1); border-radius:12px; padding:11px 12px; font-size:14px;
+                     background:rgba(255,255,255,.85); margin-bottom:8px; }
+  .swatches { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+  .sw { width:38px; height:38px; border-radius:50%; border:3px solid rgba(255,255,255,.9); box-shadow:0 2px 8px rgba(0,0,0,.15); padding:0; }
+  .sw.sel { outline:3px solid var(--accent); outline-offset:1px; }
+  .slider { padding:7px 0; } .slider .top { display:flex; justify-content:space-between; margin-bottom:6px; font-size:14px; }
+  .slider .top span:last-child { color:var(--sub); }
+  input[type=range] { width:100%; accent-color:var(--accent); }
+  #hue { -webkit-appearance:none; appearance:none; height:10px; border-radius:9px;
+         background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); }
+  #hue::-webkit-slider-thumb { -webkit-appearance:none; width:24px; height:24px; border-radius:50%; background:#fff; border:3px solid var(--accent); }
+  .note { font-size:12px; color:var(--sub); margin-top:8px; line-height:1.5; }
+
+  /* ISLAND */
+  #isl { position:fixed; left:50%; z-index:99; transform:translateX(-50%); display:flex; align-items:center; overflow:hidden;
+         white-space:nowrap; max-width:96vw; border:1px solid rgba(255,255,255,.5); cursor:pointer;
+         -webkit-backdrop-filter:blur(16px) saturate(160%); backdrop-filter:blur(16px) saturate(160%);
+         box-shadow:0 6px 24px rgba(60,40,120,.22); }
+  #isl .in { display:flex; align-items:center; width:100%; padding:0 18px; opacity:0; transform:translateY(-6px);
+             transition:opacity .15s, transform .15s; }
+  #isl.open .in { opacity:1; transform:none; transition:opacity .26s .11s, transform .26s .11s; }
+  #ic { width:40px; height:40px; border-radius:11px; flex:none; display:flex; align-items:center; justify-content:center;
+        font-size:21px; background:linear-gradient(135deg,#ff9acb,#7c5cff); }
+  .tx { margin-left:12px; line-height:1.3; min-width:0; }
+  .tx b { display:block; font-size:14px; color:var(--t1,#fff); overflow:hidden; text-overflow:ellipsis; }
+  .tx span { display:block; font-size:12px; color:var(--t2,#ddd); overflow:hidden; text-overflow:ellipsis; }
+</style>
+</head>
+<body>
+<div id="isl"><div class="in"><div id="ic">💬</div><div class="tx"><b id="ti"></b><span id="su"></span></div></div></div>
+
+<main>
+  <h1>Dynamic Island</h1>
+  <p class="tag">Island di atas ini hidup. Coba kirim notifikasi tes dan atur tampilannya.</p>
+
+  <div class="card">
+    <h2>Notifikasi tes</h2>
+    <div class="btns">
+      <button onclick="send('msg')">💬 Pesan</button>
+      <button onclick="send('music')">♪ Musik</button>
+      <button onclick="send('timer')">⏱ Timer</button>
+    </div>
+    <input type="text" id="ct" placeholder="Judul sendiri (opsional)" maxlength="40">
+    <input type="text" id="cs" placeholder="Isi pesan sendiri (opsional)" maxlength="70">
+    <button class="primary" onclick="send('custom')">Kirim notifikasi</button>
+    <div class="note">Ketuk island untuk membuka atau menutupnya.</div>
+  </div>
+
+  <div class="card">
+    <h2>Warna</h2>
+    <div class="swatches" id="swatches"></div>
+    <div class="slider"><div class="top"><span>Corak warna</span><span id="v-h"></span></div><input type="range" id="hue" min="0" max="360"></div>
+    <div class="slider"><div class="top"><span>Kepekatan</span><span id="v-s"></span></div><input type="range" id="sat" min="0" max="100"></div>
+    <div class="slider"><div class="top"><span>Terang</span><span id="v-l"></span></div><input type="range" id="lig" min="10" max="95"></div>
+    <div class="slider"><div class="top"><span>Buram / tembus pandang</span><span id="v-op"></span></div><input type="range" id="op" min="40" max="100"></div>
+  </div>
+
+  <div class="card">
+    <h2>Ukuran &amp; posisi</h2>
+    <div class="slider"><div class="top"><span>Jarak dari atas</span><span id="v-top"></span></div><input type="range" id="top" min="0" max="60"></div>
+    <div class="slider"><div class="top"><span>Lebar pill (kecil)</span><span id="v-cw"></span></div><input type="range" id="cw" min="60" max="180"></div>
+    <div class="slider"><div class="top"><span>Lebar saat melebar</span><span id="v-ew"></span></div><input type="range" id="ew" min="220" max="380"></div>
+    <button onclick="resetAll()" style="width:100%;margin-top:6px">Kembalikan ke awal</button>
+    <div class="note">Island ini tampil di dalam halaman/aplikasi ini saja. Menampilkan di atas aplikasi lain dan membaca notifikasi HP hanya bisa dilakukan versi Android native.</div>
+  </div>
+</main>
+
+<script>
+var $ = function (id) { return document.getElementById(id); };
+var DEF = { hue:262, sat:100, lig:85, op:82, top:10, cw:110, ew:330 };
+var PRESETS = ['#CDB4FF','#B5EAD7','#FFD3B6','#A0D8F1','#FFC8DD','#FFF1A8','#D9D9E8','#000000'];
+var cfg = Object.assign({}, DEF);
+try { Object.assign(cfg, JSON.parse(localStorage.getItem('di_cfg') || '{}')); } catch (e) {}
+function save() { try { localStorage.setItem('di_cfg', JSON.stringify(cfg)); } catch (e) {} }
+
+/* ---- warna ---- */
+function hslToRgb(h, s, l) {
+  s /= 100; l /= 100; var a = s * Math.min(l, 1 - l);
+  function f(n) { var k = (n + h / 30) % 12; return Math.round(255 * (l - a * Math.max(-1, Math.min(k - 3, Math.min(9 - k, 1))))); }
+  return [f(0), f(8), f(4)];
+}
+function hexToHsl(hex) {
+  var r = parseInt(hex.substr(1, 2), 16) / 255, g = parseInt(hex.substr(3, 2), 16) / 255, b = parseInt(hex.substr(5, 2), 16) / 255;
+  var mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, h = 0, s = 0, d = mx - mn;
+  if (d) { s = d / (1 - Math.abs(2 * l - 1));
+    if (mx == r) h = ((g - b) / d) % 6; else if (mx == g) h = (b - r) / d + 2; else h = (r - g) / d + 4;
+    h *= 60; if (h < 0) h += 360; }
+  return { hue: h, sat: s * 100, lig: l * 100 };
+}
+function lum(c) {
+  var x = c.map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * x[0] + 0.7152 * x[1] + 0.0722 * x[2];
+}
+function hexOf(c) { return '#' + c.map(function (v) { return v.toString(16).padStart(2, '0'); }).join('').toUpperCase(); }
+
+/* ---- fisika pegas (spring) ---- */
+var isl = $('isl'), S = { w:cfg.cw, h:32, vw:0, vh:0, tw:cfg.cw, th:32 }, running = false, last = 0, open = false;
+function frame(t) {
+  var dt = Math.min((t - last) / 1000, 1 / 30); last = t;
+  for (var i = 0; i < 4; i++) {
+    var d = dt / 4;
+    S.vw += (-260 * (S.w - S.tw) - 16 * S.vw) * d; S.w += S.vw * d;
+    S.vh += (-300 * (S.h - S.th) - 20 * S.vh) * d; S.h += S.vh * d;
+  }
+  isl.style.width = Math.max(S.w, 1) + 'px'; isl.style.height = Math.max(S.h, 1) + 'px';
+  isl.style.borderRadius = Math.min(S.h / 2, 26) + 'px';
+  var settled = Math.abs(S.w - S.tw) < .3 && Math.abs(S.h - S.th) < .3 && Math.abs(S.vw) < .5 && Math.abs(S.vh) < .5;
+  if (settled) { S.w = S.tw; S.h = S.th; running = false; isl.style.width = S.w + 'px'; isl.style.height = S.h + 'px'; return; }
+  requestAnimationFrame(frame);
+}
+function go() { if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
+function setOpen(o) {
+  open = o; isl.classList.toggle('open', o);
+  S.tw = o ? cfg.ew : cfg.cw; S.th = o ? 76 : 32; go();
+}
+
+/* ---- tampilan ---- */
+function paint() {
+  var rgb = hslToRgb(cfg.hue, cfg.sat, cfg.lig), a = cfg.op / 100;
+  var light = rgb.map(function (v) { return Math.round(v + (255 - v) * .3); });
+  isl.style.background = 'linear-gradient(rgba(' + light + ',' + a + '),rgba(' + rgb + ',' + a + '))';
+  isl.style.top = 'calc(env(safe-area-inset-top,0px) + ' + cfg.top + 'px)';
+  var lightBg = lum(rgb) > .5;
+  isl.style.setProperty('--t1', lightBg ? '#1c1c1e' : '#fff');
+  isl.style.setProperty('--t2', lightBg ? '#55555c' : '#d0d0d6');
+  var cur = hexOf(rgb);
+  document.querySelectorAll('.sw').forEach(function (e) { e.classList.toggle('sel', e.dataset.c === cur); });
+  S.tw = open ? cfg.ew : cfg.cw; S.th = open ? 76 : 32; go();
+}
+function syncUi() {
+  ['hue','sat','lig','op','top','cw','ew'].forEach(function (k) {
+    $(k).value = cfg[k];
+    $('v-' + (k === 'hue' ? 'h' : k === 'sat' ? 's' : k === 'lig' ? 'l' : k)).textContent =
+      Math.round(cfg[k]) + (k === 'hue' ? '°' : (k === 'sat' || k === 'lig' || k === 'op') ? '%' : ' dp');
+  });
+}
+['hue','sat','lig','op','top','cw','ew'].forEach(function (k) {
+  $(k).addEventListener('input', function () { cfg[k] = +$(k).value; syncUi(); paint(); save(); });
+});
+PRESETS.forEach(function (c) {
+  var b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
+  b.onclick = function () { var h = hexToHsl(c); cfg.hue = h.hue; cfg.sat = h.sat; cfg.lig = h.lig; syncUi(); paint(); save(); };
+  $('swatches').appendChild(b);
+});
+function resetAll() { cfg = Object.assign({}, DEF); syncUi(); paint(); save(); }
+
+/* ---- notifikasi ---- */
+var timer = null;
+var SAMPLES = {
+  msg:   { ic:'💬', t:'Pesan baru', s:'Hai! Island-nya jalan mulus 🎉' },
+  music: { ic:'♪',  t:'♪ Sedang diputar', s:'Lagu favoritmu · Artis' },
+  timer: { ic:'⏱',  t:'⏱ Timer selesai', s:'Waktunya istirahat sebentar' }
+};
+function send(type) {
+  var n = SAMPLES[type];
+  if (type === 'custom') n = { ic:'🔔', t:$('ct').value.trim() || 'Notifikasi', s:$('cs').value.trim() || 'Notifikasi tes' };
+  $('ic').textContent = n.ic; $('ti').textContent = n.t; $('su').textContent = n.s;
+  clearTimeout(timer); setOpen(true);
+  timer = setTimeout(function () { setOpen(false); }, 4500);
+}
+isl.addEventListener('click', function () {
+  clearTimeout(timer);
+  if (open) setOpen(false); else { setOpen(true); timer = setTimeout(function () { setOpen(false); }, 4500); }
+});
+
+S.w = cfg.cw; syncUi(); paint();
+setTimeout(function () { send('msg'); }, 700);
+</script>
+</body>
+</html>
