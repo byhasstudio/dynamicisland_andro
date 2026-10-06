@@ -38,6 +38,9 @@
   #hue { -webkit-appearance:none; appearance:none; height:10px; border-radius:9px;
          background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); }
   #hue::-webkit-slider-thumb { -webkit-appearance:none; width:24px; height:24px; border-radius:50%; background:#fff; border:3px solid var(--accent); }
+  .row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; font-size:14px; }
+  .chip { font-size:12px; font-weight:600; padding:4px 10px; border-radius:99px; background:rgba(229,72,77,.14); color:#e5484d; }
+  .chip.ok { background:rgba(31,163,91,.14); color:#1fa35b; }
   .note { font-size:12px; color:var(--sub); margin-top:8px; line-height:1.5; }
 
   /* ISLAND */
@@ -61,6 +64,17 @@
 <main>
   <h1>Dynamic Island</h1>
   <p class="tag">Island di atas ini hidup. Coba kirim notifikasi tes dan atur tampilannya.</p>
+
+  <div class="card" id="nat" style="display:none">
+    <h2>Tampil di semua aplikasi</h2>
+    <div class="row"><span>Izin tampil di atas aplikasi lain</span><span id="n-ov" class="chip">-</span></div>
+    <button style="width:100%;margin-bottom:6px" onclick="NI.openOverlay()">Atur izin overlay</button>
+    <div class="row"><span>Akses notifikasi</span><span id="n-ls" class="chip">-</span></div>
+    <button style="width:100%;margin-bottom:6px" onclick="NI.openListener()">Atur akses notifikasi</button>
+    <button style="width:100%;margin-bottom:10px" onclick="NI.requestNotif()">Izin notifikasi (Android 13+)</button>
+    <button class="primary" id="n-tg" onclick="nTog()">...</button>
+    <div class="note">Kalau akses notifikasi terkunci: Info Aplikasi &gt; titik tiga &gt; Izinkan setelan terbatas. Saat island native menyala, island di dalam halaman ini disembunyikan.</div>
+  </div>
 
   <div class="card">
     <h2>Notifikasi tes</h2>
@@ -101,6 +115,8 @@ var PRESETS = ['#CDB4FF','#B5EAD7','#FFD3B6','#A0D8F1','#FFC8DD','#FFF1A8','#D9D
 var cfg = Object.assign({}, DEF);
 try { Object.assign(cfg, JSON.parse(localStorage.getItem('di_cfg') || '{}')); } catch (e) {}
 function save() { try { localStorage.setItem('di_cfg', JSON.stringify(cfg)); } catch (e) {} }
+
+var NI = window.AndroidIsland || null;
 
 /* ---- warna ---- */
 function hslToRgb(h, s, l) {
@@ -154,6 +170,7 @@ function paint() {
   isl.style.setProperty('--t2', lightBg ? '#55555c' : '#d0d0d6');
   var cur = hexOf(rgb);
   document.querySelectorAll('.sw').forEach(function (e) { e.classList.toggle('sel', e.dataset.c === cur); });
+  if (NI) { try { NI.setStyle(hexOf(rgb), cfg.op, cfg.top, cfg.cw, cfg.ew); } catch (e) {} }
   S.tw = open ? cfg.ew : cfg.cw; S.th = open ? 76 : 32; go();
 }
 function syncUi() {
@@ -165,13 +182,14 @@ function syncUi() {
 }
 ['hue','sat','lig','op','top','cw','ew'].forEach(function (k) {
   $(k).addEventListener('input', function () { cfg[k] = +$(k).value; syncUi(); paint(); save(); });
+  $(k).addEventListener('change', function () { if (NI) NI.reload(); });
 });
 PRESETS.forEach(function (c) {
   var b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
-  b.onclick = function () { var h = hexToHsl(c); cfg.hue = h.hue; cfg.sat = h.sat; cfg.lig = h.lig; syncUi(); paint(); save(); };
+  b.onclick = function () { var h = hexToHsl(c); cfg.hue = h.hue; cfg.sat = h.sat; cfg.lig = h.lig; syncUi(); paint(); save(); if (NI) NI.reload(); };
   $('swatches').appendChild(b);
 });
-function resetAll() { cfg = Object.assign({}, DEF); syncUi(); paint(); save(); }
+function resetAll() { cfg = Object.assign({}, DEF); syncUi(); paint(); save(); if (NI) NI.reload(); }
 
 /* ---- notifikasi ---- */
 var timer = null;
@@ -184,6 +202,7 @@ function send(type) {
   var n = SAMPLES[type];
   if (type === 'custom') n = { ic:'🔔', t:$('ct').value.trim() || 'Notifikasi', s:$('cs').value.trim() || 'Notifikasi tes' };
   $('ic').textContent = n.ic; $('ti').textContent = n.t; $('su').textContent = n.s;
+  if (NI) { try { NI.test(n.t, n.s); } catch (e) {} }
   clearTimeout(timer); setOpen(true);
   timer = setTimeout(function () { setOpen(false); }, 4500);
 }
@@ -193,6 +212,23 @@ isl.addEventListener('click', function () {
 });
 
 S.w = cfg.cw; syncUi(); paint();
+
+/* ---- island native (hanya ada di dalam APK yang dibuat dengan izin "island") ---- */
+function chip(id, ok) { var e = $(id); e.textContent = ok ? 'OK' : 'Belum'; e.className = 'chip' + (ok ? ' ok' : ''); }
+function pollNative() {
+  if (!NI) return;
+  try {
+    var st = JSON.parse(NI.getState());
+    chip('n-ov', st.overlay); chip('n-ls', st.listener);
+    $('n-tg').textContent = st.running ? 'Matikan island native' : 'Nyalakan island native';
+    isl.style.display = st.running ? 'none' : 'flex';
+  } catch (e) {}
+}
+function nTog() {
+  try { var st = JSON.parse(NI.getState()); if (st.running) NI.stop(); else NI.start(); } catch (e) {}
+  setTimeout(pollNative, 700);
+}
+if (NI) { $('nat').style.display = 'block'; pollNative(); setInterval(pollNative, 1000); }
 setTimeout(function () { send('msg'); }, 700);
 </script>
 </body>
