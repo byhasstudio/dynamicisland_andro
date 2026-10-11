@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8defc">
+<meta name="win-island" content="1">
+<title>SyhabOS</title>
+<style>
+  :root { --text:#1d1d24; --sub:#6b6b78; --glass:rgba(255,255,255,.58); --line:rgba(255,255,255,.8); --accent:#7c5cff; --accent2:#6c8bff;
+          --field:rgba(255,255,255,.85); --soft:rgba(255,255,255,.55); --btn:rgba(255,255,255,.82); --hair:rgba(0,0,0,.07); --shadow:rgba(90,70,160,.12); }
+  @media (prefers-color-scheme: dark) {
+    :root { --text:#f2f2f7; --sub:#a1a1ad; --glass:rgba(34,34,44,.62); --line:rgba(255,255,255,.1); --field:rgba(255,255,255,.07);
+            --soft:rgba(255,255,255,.05); --btn:rgba(255,255,255,.1); --hair:rgba(255,255,255,.08); --shadow:rgba(0,0,0,.35); }
+    body { background:linear-gradient(160deg,#1c1830 0%,#13202e 50%,#2a1622 100%) fixed !important; }
+    input[type=text] { color:var(--text); border-color:rgba(255,255,255,.12) !important; }
+  }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; }
+  body { min-height:100vh; color:var(--text); font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
+         padding:28px 20px 48px; background:linear-gradient(160deg,#e8defc 0%,#d6ecff 45%,#ffe3ee 100%) fixed; }
+  body::before,body::after { content:""; position:fixed; z-index:-1; border-radius:50%; filter:blur(70px); opacity:.6; pointer-events:none; }
+  body::before { width:320px; height:320px; background:#cdb4ff; top:-80px; left:-90px; }
+  body::after { width:340px; height:340px; background:#ffc8dd; bottom:-100px; right:-100px; }
+  main { max-width:1040px; margin:0 auto; }
+  header { display:flex; align-items:center; gap:14px; margin:0 4px 18px; flex-wrap:wrap; }
+  .lang { margin-left:auto; display:flex; align-items:center; gap:6px; font-size:16px; }
+  .lang select { font:inherit; font-size:14px; font-weight:600; color:var(--text); background:var(--field); border:1px solid var(--line); border-radius:12px; padding:8px 10px; outline:none; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  #fxhc select { font:inherit; font-size:14px; color:var(--text); background:var(--field); border:1px solid var(--line); border-radius:10px; padding:7px 8px; outline:none; max-width:46%; }
+  .lang select:focus { border-color:var(--accent); }
+  .lang select option { color:#1d1d24; background:#fff; }
+  .logo { width:46px; height:46px; border-radius:15px; background:#000; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 22px rgba(60,40,120,.3); flex:none; }
+  .logo i { width:26px; height:9px; border-radius:6px; background:#1f1f24; box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); display:block; position:relative; top:-8px; }
+  h1 { font-size:26px; margin:0; letter-spacing:-.4px; }
+  .tag { margin:2px 0 0; color:var(--sub); font-size:14px; }
+  .cols { display:grid; grid-template-columns:1fr; gap:14px; }
+  @media (min-width:900px) { .cols { grid-template-columns:1fr 1fr; align-items:start; } .span { grid-column:1 / -1; } }
+  .col { display:flex; flex-direction:column; gap:14px; min-width:0; }
+  .card { background:var(--glass); border:1px solid var(--line); border-radius:24px; padding:18px;
+          -webkit-backdrop-filter:blur(22px) saturate(160%); backdrop-filter:blur(22px) saturate(160%); box-shadow:0 8px 30px var(--shadow); }
+  .card h2 { font-size:12px; text-transform:uppercase; letter-spacing:.9px; color:var(--sub); margin:0 0 12px; font-weight:700; }
+  button { border:0; border-radius:14px; padding:11px 12px; font:inherit; font-size:14px; font-weight:600; color:var(--text); background:var(--btn);
+           box-shadow:0 2px 8px rgba(0,0,0,.07); cursor:pointer; transition:transform .12s, filter .12s; }
+  button:hover { filter:brightness(1.04); } button:active { transform:scale(.97); }
+  button.primary { width:100%; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:15px; padding:13px; }
+  button.on { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; }
+  .btns { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+  .seg4 { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px; } .seg4 button { padding:10px 4px; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  input[type=text] { width:100%; border:1px solid rgba(0,0,0,.1); border-radius:12px; padding:10px 12px; font:inherit; font-size:14px; background:var(--field); margin-bottom:8px; outline:none; }
+  input[type=text]:focus { border-color:var(--accent); }
+  input[type=range] { width:100%; accent-color:var(--accent); }
+  input[type=checkbox] { width:22px; height:22px; accent-color:var(--accent); flex:none; }
+  .slider { padding:6px 0; } .slider .top { display:flex; justify-content:space-between; margin-bottom:5px; font-size:14px; }
+  .slider .top span:last-child { color:var(--sub); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .num { width:74px; border:1px solid rgba(0,0,0,.12); border-radius:9px; padding:3px 6px; font:inherit; font-size:13px; text-align:right; background:var(--field); color:var(--text); outline:none; }
+  .num:focus { border-color:var(--accent); }
+  #hue { -webkit-appearance:none; appearance:none; height:10px; border-radius:9px; background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); }
+  #hue::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:#fff; border:3px solid var(--accent); }
+  .swatches { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+  .sw { width:36px; height:36px; border-radius:50%; border:3px solid rgba(255,255,255,.9); box-shadow:0 2px 8px rgba(0,0,0,.18); padding:0; }
+  .sw.sel { outline:3px solid var(--accent); outline-offset:1px; }
+  .row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; font-size:14px; }
+  .row small { display:block; color:var(--sub); font-size:12px; margin-top:1px; }
+  .chip { font-size:12px; font-weight:700; padding:4px 11px; border-radius:99px; background:rgba(229,72,77,.15); color:#e5484d; white-space:nowrap; }
+  .chip.ok { background:rgba(31,163,91,.16); color:#1fa35b; } .chip.mid { background:rgba(240,160,0,.18); color:#b87400; }
+  .note { font-size:12px; color:var(--sub); margin-top:10px; line-height:1.55; }
+  .warn { margin:0 0 14px; padding:12px 14px; border-radius:16px; background:rgba(255,160,0,.16); font-size:13px; line-height:1.5; }
+  .err { color:#e5484d; }
+
+  /* pratinjau */
+  #stage { position:relative; height:250px; border-radius:20px; overflow:hidden; margin-bottom:4px;
+           background:linear-gradient(135deg,#3b2f6b 0%,#27406b 48%,#6b2f55 100%); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); }
+  #stage::before { content:""; position:absolute; left:0; right:0; bottom:0; height:34px; background:rgba(20,20,28,.55); }
+  #stage::after { content:""; position:absolute; left:50%; bottom:8px; width:130px; height:18px; transform:translateX(-50%); border-radius:9px;
+                  background:repeating-linear-gradient(90deg,rgba(255,255,255,.4) 0 18px,transparent 18px 26px); opacity:.5; }
+  #stage .win { position:absolute; left:10%; right:10%; top:76px; bottom:46px; border-radius:10px; background:rgba(255,255,255,.1); box-shadow:inset 0 0 0 1px rgba(255,255,255,.14); }
+  #stage .win::before { content:""; position:absolute; left:0; right:0; top:0; height:22px; border-radius:10px 10px 0 0; background:rgba(255,255,255,.12); }
+
+  /* daftar aplikasi */
+  #alist, #slist { max-height:300px; overflow:auto; border-radius:14px; background:var(--soft); padding:2px 8px; margin:8px 0; }
+  #alist.off { opacity:.45; pointer-events:none; }
+  #sbox.off { opacity:.45; pointer-events:none; }
+  .app { display:flex; align-items:center; gap:11px; padding:7px 4px; font-size:14px; border-bottom:1px solid var(--hair); cursor:pointer; }
+  .app .ico { width:32px; height:32px; flex:none; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; overflow:hidden; }
+  .app .ico img { width:100%; height:100%; object-fit:cover; display:block; }
+  .app span.n { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .app em { font-style:normal; font-size:11px; font-weight:700; color:var(--accent); background:rgba(124,92,255,.14); padding:2px 8px; border-radius:99px; }
+  .app input { width:20px; height:20px; }
+  .hrow { display:flex; gap:10px; padding:8px 4px; border-bottom:1px solid var(--hair); cursor:pointer; font-size:13px; }
+  .hrow:hover { background:var(--soft); border-radius:10px; }
+  .hrow time { color:var(--sub); font-variant-numeric:tabular-nums; flex:none; width:44px; }
+  .hrow b { display:block; font-size:13px; } .hrow span { color:var(--sub); display:block; word-break:break-word; }
+  #hlist { max-height:280px; overflow:auto; border-radius:14px; background:var(--soft); padding:2px 8px; }
+  #qbox.off, #cbox.off, #xbox.off, #shbox.off, #nsbox.off, #ssbox.off { opacity:.45; pointer-events:none; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="logo"><i></i></div>
+    <div><h1>SyhabOS</h1><p class="tag">Notifikasi Windows tampil di pulau hitam di atas layar, plus animasi buka &amp; tutup jendela ala iOS.</p></div>
+    <label class="lang"><span aria-hidden="true">🌐</span><select id="lang" title="Bahasa" aria-label="Bahasa"></select></label>
+  </header>
+
+  <div class="card span" style="margin-bottom:14px">
+    <h2>Pratinjau</h2>
+    <div id="stage"><div class="win"></div></div>
+    <div class="note" style="margin-top:6px">Ini hanya contoh tampilan. Island sungguhan muncul di tengah atas layar utama Windows kamu.</div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="card" id="nat" style="display:none">
+        <h2>Status</h2>
+        <div class="row"><span>Pembantu sistem<small>Program kecil pembaca notifikasi &amp; jendela</small></span><span id="c-help" class="chip" data-nt>-</span></div>
+        <div class="row"><span>Pembaca notifikasi Windows</span><span id="c-notif" class="chip" data-nt>-</span></div>
+        <div class="row"><span>Pemantau jendela (animasi)</span><span id="c-win" class="chip" data-nt>-</span></div>
+        <div class="row" style="padding-bottom:12px"><span>Daftar aplikasi terpasang</span><span id="c-apps" class="chip" data-nt>-</span></div>
+        <button class="primary" id="tg" data-nt onclick="nTog()">...</button>
+        <div class="two" style="margin-top:8px"><button onclick="NI.openWinSettings()">Pengaturan notifikasi Windows</button><button onclick="NI.test(t('Halo dari Windows'),t('Dynamic Island aktif'))">Kirim tes ke island asli</button></div>
+        <div class="note" id="nerr" data-nt></div>
+        <div class="note">Island membaca notifikasi yang masuk ke Windows, jadi notifikasi asli Windows tetap muncul juga. Kalau mau hanya island: matikan banner notifikasi di Pengaturan Windows untuk aplikasi tertentu (island tetap menerimanya selama notifikasinya aktif). Island tidak muncul saat mode Jangan Ganggu / Focus aktif.</div>
+      </div>
+
+      <div class="card">
+        <h2>Notifikasi tes</h2>
+        <div class="btns">
+          <button onclick="send('msg')">💬 Pesan</button>
+          <button onclick="send('music')">♪ Musik</button>
+          <button onclick="send('timer')">⏱ Timer</button>
+        </div>
+        <input type="text" id="ct" placeholder="Judul sendiri (opsional)" maxlength="40">
+        <input type="text" id="cs" placeholder="Isi pesan sendiri (opsional)" maxlength="120">
+        <button class="primary" onclick="send('custom')">Kirim notifikasi</button>
+        <div class="note">Ketuk island untuk menutup, geser ke atas juga menutup. Island tidak menutup sendiri selagi kursor ada di atasnya.</div>
+      </div>
+
+      <div class="card">
+        <h2>Warna</h2>
+        <div class="swatches" id="swatches"></div>
+        <div class="slider"><div class="top"><span>Corak warna</span><span id="v-h"></span></div><input type="range" id="hue" min="0" max="360"></div>
+        <div class="slider"><div class="top"><span>Kepekatan</span><span id="v-s"></span></div><input type="range" id="sat" min="0" max="100"></div>
+        <div class="slider"><div class="top"><span>Terang</span><span id="v-l"></span></div><input type="range" id="lig" min="0" max="100"></div>
+        <div class="slider"><div class="top"><span>Buram / tembus pandang</span><span id="v-op"></span></div><input type="range" id="op" min="40" max="100"></div>
+      </div>
+
+      <div class="card">
+        <h2>Ukuran &amp; posisi</h2>
+        <div class="note" style="margin:0 0 6px">Posisi di layar (selalu di tengah tepi yang dipilih):</div>
+        <div class="seg4"><button id="ed-top" onclick="setEdge('top')">⬆ Atas</button><button id="ed-bottom" onclick="setEdge('bottom')">⬇ Bawah</button><button id="ed-left" onclick="setEdge('left')">⬅ Kiri</button><button id="ed-right" onclick="setEdge('right')">➡ Kanan</button></div>
+        <div class="slider"><div class="top"><span>Jarak dari tepi layar</span><span id="v-top"></span></div><input type="range" id="top" min="-30" max="120"></div>
+        <div class="slider"><div class="top"><span>Geser sepanjang tepi</span><span id="v-cx"></span></div><input type="range" id="cx" min="-300" max="300"></div>
+        <div class="slider"><div class="top"><span>Tinggi pill</span><span id="v-dh"></span></div><input type="range" id="dh" min="-20" max="80"></div>
+        <div class="slider"><div class="top"><span>Lebar pill (kecil)</span><span id="v-cw"></span></div><input type="range" id="cw" min="40" max="400"></div>
+        <div class="slider"><div class="top"><span>Lebar saat melebar</span><span id="v-ew"></span></div><input type="range" id="ew" min="160" max="700"></div>
+        <div class="row" id="pillrow" style="display:none"><span>Selalu tampilkan pill kecil<small>Island tetap di layar, juga di atas aplikasi layar penuh, sampai kamu matikan. Kalau mati, island hanya muncul saat ada notifikasi</small></span><input type="checkbox" id="pill"></div>
+        <button onclick="resetAll()" style="width:100%;margin-top:6px">Kembalikan ke awal</button>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card" id="anm" style="display:none">
+        <h2>Animasi buka &amp; tutup jendela</h2>
+        <div class="row"><span>Animasi halus ala iOS (semua aplikasi)<small>Kartu membesar dari taskbar saat jendela dibuka, mengecil saat ditutup</small></span><input type="checkbox" id="anim"></div>
+        <div class="row"><span>Juga saat minimize &amp; pulihkan<small>Efek tambahan di atas animasi bawaan Windows</small></span><input type="checkbox" id="animmin"></div>
+        <button class="primary" onclick="NI.demoAnim()" style="margin-top:6px">▶ Coba animasi</button>
+        <div class="note">Efek ini digambar di atas animasi bawaan Windows, bukan penggantinya, jadi pada beberapa PC terlihat berlapis. Jendela kecil, menu, dialog, dan popup diabaikan. Efek memantau jendela aplikasi lain, jadi tidak ikut menganimasikan jendela aplikasi ini sendiri.</div>
+      </div>
+
+      <div class="card" id="flt" style="display:none">
+        <h2>Aplikasi &amp; suara</h2>
+        <div class="two" style="margin-bottom:6px">
+          <button id="m0" onclick="fltMode(0)">Semua aplikasi</button>
+          <button id="m1" onclick="fltMode(1)">Pilih sendiri</button>
+        </div>
+        <div class="note" id="acount" data-nt style="margin:0 0 8px"></div>
+        <input type="text" id="asr" placeholder="Cari aplikasi" maxlength="40">
+        <div class="two">
+          <button onclick="fltAll(true)">Pilih semua</button>
+          <button onclick="fltAll(false)">Kosongkan</button>
+        </div>
+        <div id="alist" data-nt></div>
+        <div class="slider"><div class="top"><span>Lama island terbuka</span><span id="v-dur" data-nt></span></div><input type="range" id="dur" min="2" max="20" step="0.5" value="4.5"></div>
+        <div class="row"><span>Klik notifikasi membuka aplikasinya</span><input type="checkbox" id="tap"></div>
+        <div class="row"><span>Suara saat notifikasi masuk<small>Windows juga punya suara sendiri; matikan salah satu kalau dobel</small></span><input type="checkbox" id="snd"></div>
+        <div id="sbox">
+          <div class="slider"><div class="top"><span>Volume suara</span><span id="v-sv"></span></div><input type="range" id="sv" min="10" max="100"></div>
+          <div class="row"><span>Nada: <b id="sname" data-nt>Bawaan Windows</b></span><button onclick="sndList()" style="padding:8px 14px">Pilih nada</button></div>
+          <div id="slist" data-nt style="display:none"></div>
+        </div>
+        <div class="note" data-h="mode_pilih_note">Mode &quot;Pilih sendiri&quot;: hanya aplikasi yang dicentang tampil di island. Aplikasi yang belum ada di daftar muncul otomatis (bertanda <b>baru</b>) setelah pernah mengirim notifikasi.</div>
+      </div>
+
+      <div class="card" id="smt" style="display:none">
+        <h2>Fitur pintar</h2>
+        <div class="row"><span>Cahaya warna aplikasi<small>Island berpendar sesuai warna ikon aplikasi pengirim</small></span><input type="checkbox" id="glow"></div>
+        <div class="row"><span>Peringatan baterai &amp; charger<small>Mengisi daya, dicabut, penuh, lemah (20%), kritis (10%)</small></span><input type="checkbox" id="bat"></div>
+        <div class="row"><span>Pemberitahuan saat menyalin teks<small>Menampilkan cuplikan teks yang baru disalin (Ctrl+C). Isinya hanya tampil sesaat di layar.</small></span><input type="checkbox" id="clip"></div>
+        <div class="row"><span>Tombol pintas<small>Ctrl+Alt+N = jangan ganggu, Ctrl+Alt+I = tutup island</small></span><input type="checkbox" id="hot"></div>
+        <div class="row"><span>Jangan ganggu sekarang<small>Notifikasi tidak ditampilkan di island (tetap masuk riwayat)</small></span><input type="checkbox" id="dnd"></div>
+        <div class="row"><span>Jam tenang otomatis</span><input type="checkbox" id="qon"></div>
+        <div class="two" id="qbox" style="margin-bottom:8px"><label class="note" style="margin:0">Mulai<br><input type="time" class="num" id="qfrom" style="width:100%;text-align:left"></label><label class="note" style="margin:0">Selesai<br><input type="time" class="num" id="qto" style="width:100%;text-align:left"></label></div>
+        <div class="note" style="margin:0 0 6px">Tampil di monitor:</div>
+        <div class="two"><button id="mo0" onclick="setMon('primary')">Monitor utama</button><button id="mo1" onclick="setMon('cursor')">Yang sedang dipakai</button></div>
+      </div>
+
+      <div class="card" id="fx2" style="display:none">
+        <h2>Live activity &amp; alat pintar</h2>
+        <div class="row"><span>Pembantu tambahan<small>Program kecil pembaca media, jaringan, mikrofon, dll</small></span><span id="c-sys" class="chip" data-nt>-</span></div>
+        <div class="row"><span>Jalan otomatis saat Windows menyala<small>Setelah restart atau shutdown, island muncul lagi sendiri tanpa membuka jendela aplikasi</small></span><input type="checkbox" id="o-auto"></div>
+        <div class="row"><span>Aktifkan live activity<small>Pill melebar menampilkan indikator di kiri &amp; kanan; arahkan kursor untuk membuka detailnya</small></span><input type="checkbox" id="o-live"></div>
+        <div class="row"><span>Notifikasi saat aplikasi dibuka<small>Tampil sebentar dengan ikon aplikasi</small></span><input type="checkbox" id="o-appnotif"></div>
+        <div class="row"><span>Titik indikator rekam, mikrofon &amp; kamera<small>Merah = merekam layar, oranye = mikrofon, hijau = kamera, lengkap dengan notifikasi dan nama aplikasinya</small></span><input type="checkbox" id="o-devs"></div>
+        <div class="row"><span>Pengendali media &amp; indikator audio<small>Judul lagu (Spotify, YouTube di browser, VLC), tombol putar/jeda/lanjut, gelombang mini saat kursor diarahkan</small></span><input type="checkbox" id="o-media"></div>
+        <div class="row"><span>Notifikasi saat ada suara / lagu diputar<small>Banner judul lagu yang muncul setiap ada suara (misalnya YouTube). Matikan kalau mengganggu; pengendali media di pill tetap jalan</small></span><input type="checkbox" id="o-mtoast"></div>
+        <div class="row"><span>Kecepatan internet<small>Muncul otomatis saat unduhan besar (di atas 1,5 MB/dtk)</small></span><input type="checkbox" id="o-net"></div>
+        <div class="row"><span>Progres render &amp; ekstrak<small>Dibaca dari persen di judul jendela (WinRAR, 7-Zip, penyalinan File Explorer, Media Encoder, dll)</small></span><input type="checkbox" id="o-prog"></div>
+        <div class="row"><span>FPS &amp; ping saat bermain<small>Muncul hanya saat game aktif (Roblox, Valorant, game Steam/Epic/Riot, dll). Ketuk pill untuk detail. Game tak terdeteksi: tekan Ctrl+Alt+G di game itu</small></span><input type="checkbox" id="o-game"></div>
+        <div class="row"><span>FPS akurat (PresentMon)<small>Membaca frame asli dari game, lengkap dengan 1% low. Perlu izin sekali saja</small></span><span id="c-pm" class="chip" data-nt>-</span><input type="checkbox" id="o-fpsreal"></div>
+        <button onclick="ni('grantFps')">Beri izin FPS (sekali, perlu admin)</button>
+        <div class="row"><span>Kantong seret &amp; lepas<small>Seret file, gambar, atau teks ke tengah atas layar, lalu tarik keluar ke aplikasi lain. Hanya untuk posisi island di atas</small></span><input type="checkbox" id="o-hub"></div>
+        <div class="note" style="margin:6px 0">Monitor CPU / RAM / GPU:</div>
+        <div class="seg4" style="grid-template-columns:repeat(3,1fr)"><button id="r0" onclick="setRmon(0)">Mati</button><button id="r1" onclick="setRmon(1)">Saat lag</button><button id="r2" onclick="setRmon(2)">Selalu</button></div>
+        <div class="note" style="margin-top:0">Saat lag, island membesar dan menampilkan aplikasi paling berat memori dengan tombol End Task.</div>
+        <div class="row" style="margin-top:8px"><span>Kursor kustom<small>Mengganti kursor panah &amp; tangan Windows. Kembali normal saat aplikasi ditutup</small></span><input type="checkbox" id="o-curs"></div>
+        <div id="cbox">
+          <div class="seg4"><button id="cs-arrow" onclick="setCs('arrow')">Panah</button><button id="cs-ring" onclick="setCs('ring')">Cincin</button><button id="cs-dot" onclick="setCs('dot')">Titik</button><button id="cs-cross" onclick="setCs('cross')">Bidik</button></div>
+          <div class="row"><span>Warna kursor</span><input type="color" id="o-ccolor" value="#ffffff" style="width:46px;height:30px;border:0;background:none"></div>
+          <div class="slider"><div class="top"><span>Ukuran kursor</span><span id="v-csize"></span></div><input type="range" id="o-csize" min="20" max="64" value="36"></div>
+        </div>
+      </div>
+
+      <div class="card" id="fx6" style="display:none">
+        <h2>Launchpad</h2>
+        <div class="row"><span>Dock<small>Diperlukan: ikon Launchpad muncul di Dock (di sebelah ikon Start)</small></span><input type="checkbox" id="o-dock"></div>
+        <div class="row"><span>Ikon Launchpad di Dock<small>Klik ikonnya untuk menampilkan grid semua aplikasi layar penuh</small></span><input type="checkbox" id="o-lp"></div>
+        <div class="row"><span>Badge notifikasi di Dock<small>Angka merah di ikon aplikasi yang mengirim notifikasi; hilang saat aplikasinya dibuka</small></span><input type="checkbox" id="o-dbadge"></div>
+        <div class="row"><span>Adaptive Dock<small>Dock menyesuaikan kebiasaanmu: aplikasi yang sering dipakai diurutkan paling depan, dan sampai 3 aplikasi favorit yang sedang tidak jalan muncul sebagai saran</small></span><input type="checkbox" id="o-dadapt"></div>
+        <div class="row"><span>Zona tata letak jendela<small>Saat kamu menyeret jendela, deretan zona bernomor 1–8 muncul di sisi kanan layar (penuh, kiri, kanan, tengah, empat sudut). Lepas jendela di zona untuk menempatkannya. Butuh Dock aktif</small></span><input type="checkbox" id="o-snapz"></div>
+        <button id="lpopen" style="width:100%;margin:6px 0 4px">Buka Launchpad sekarang</button>
+      </div>
+
+      <div class="card" id="fx5" style="display:none">
+        <h2>Spotlight</h2>
+        <div class="row"><span>Spotlight (Ctrl+Space)<small>Kotak pencarian di tengah layar: buka aplikasi, cari file, dan kalkulator cepat (contoh: 12*(3+4))</small></span><input type="checkbox" id="o-spot"></div>
+        <div id="spbox">
+          <div class="row"><span>Cari file &amp; folder<small>Desktop, Dokumen, Unduhan, Gambar, Musik, dan Video</small></span><input type="checkbox" id="o-spotfiles"></div>
+          <button id="spopen" style="width:100%;margin:6px 0 4px">Buka Spotlight sekarang</button>
+          <div id="spwarn" class="row" style="display:none;color:#ff9f0a"><span>Ctrl+Space sedang dipakai aplikasi lain (misalnya pengalih bahasa/IME), jadi pintasan tidak aktif. Gunakan tombol di atas.</span></div>
+        </div>
+      </div>
+
+      <div class="card" id="fx4" style="display:none">
+        <h2>Menu bar</h2>
+        <div class="row"><span>Menu bar di atas layar<small>Bar tipis ala macOS: nama aplikasi aktif, jam, baterai, Wi-Fi, dan volume (scroll di ikon volume untuk mengatur, klik untuk bisukan)</small></span><input type="checkbox" id="o-mb"></div>
+        <div id="mbbox">
+          <button id="mbtoggle" data-nt style="width:100%;margin:6px 0 4px">Sembunyikan menu bar</button>
+          <div class="row"><span>Control Center<small>Ikon di menu bar membuka panel cepat: Wi-Fi, mode gelap, jangan ganggu, kecerahan, dan volume</small></span><input type="checkbox" id="o-cc"></div>
+          <button id="ccopen" style="width:100%;margin:2px 0 4px">Buka Control Center sekarang</button>
+          <div class="row"><span>Sisakan ruang di atas layar<small>Jendela maksimal tidak menutupi menu bar</small></span><input type="checkbox" id="o-mbres"></div>
+          <div class="row"><span>Format 24 jam</span><input type="checkbox" id="o-mb24"></div>
+          <div class="row"><span>Tampilkan tanggal</span><input type="checkbox" id="o-mbdate"></div>
+          <div class="row"><span>Tampilkan detik</span><input type="checkbox" id="o-mbsec"></div>
+        </div>
+      </div>
+
+      <div class="card" id="fxmc" style="display:none">
+        <h2>Mission Control</h2>
+        <div class="row"><span>Mission Control<small>Semua jendela yang terbuka dikecilkan jadi satu layar untuk dipilih. Pintasan: Ctrl+Alt+↑. Klik jendela untuk membukanya, tombol × untuk menutupnya, Esc untuk keluar</small></span><input type="checkbox" id="o-mc"></div>
+        <button id="mcopen" style="width:100%;margin:2px 0 4px">Buka Mission Control sekarang</button>
+      </div>
+
+      <div class="card" id="fxgm" style="display:none">
+        <h2>Game mode</h2>
+        <div class="row"><span>Game mode otomatis<small>Saat game terdeteksi (layar penuh, atau ditandai dengan Ctrl+Alt+G), aplikasi ini otomatis menjadi ringan: prioritas CPU diturunkan, prioritas game dinaikkan, Dock/menu bar/Spotlight berhenti bekerja di belakang, dan pemantau FPS PresentMon dimatikan. Kembali normal sendiri setelah keluar dari game.</small></span><input type="checkbox" id="o-gmode"></div>
+        <div class="row"><span><small id="gmst" data-nt>Status: menunggu game</small></span></div>
+      </div>
+
+      <div class="card" id="fx7" style="display:none">
+        <h2>Fitur macOS tambahan</h2>
+        <div class="row"><span>Pengalih Aplikasi (Ctrl+Alt+S)<small>Deretan ikon aplikasi di tengah layar seperti Cmd+Tab. Tekan pintasannya lagi atau Tab untuk berpindah, Enter untuk memilih, Q untuk keluar dari aplikasi, H untuk menyembunyikan</small></span><input type="checkbox" id="o-asw"></div>
+        <button id="swopen" style="width:100%;margin:2px 0 8px">Buka Pengalih Aplikasi sekarang</button>
+
+        <div class="row"><span>Screenshot ala macOS<small>Ctrl+Shift+3 seluruh layar, Ctrl+Shift+4 area terpilih, Ctrl+Shift+5 toolbar dengan timer. Hasil disimpan ke Desktop dan thumbnail kecil muncul di pojok kanan bawah (klik untuk membuka, geser ke kanan untuk menutup)</small></span><input type="checkbox" id="o-shot"></div>
+        <div id="shbox">
+          <div class="row"><span>Thumbnail mengambang</span><input type="checkbox" id="o-shotthumb"></div>
+          <div class="row"><span>Suara rana kamera</span><input type="checkbox" id="o-shotsnd"></div>
+          <div class="row"><span>Salin juga ke papan klip<small>Selain disimpan ke Desktop, gambar langsung bisa ditempel (Ctrl+V)</small></span><input type="checkbox" id="o-shotclip"></div>
+          <div class="seg4" style="grid-template-columns:repeat(3,1fr);margin:2px 0 8px"><button id="shfull">Seluruh layar</button><button id="sharea">Area</button><button id="shbar">Toolbar</button></div>
+        </div>
+
+        <div class="row"><span>Paksa Keluar Aplikasi (Ctrl+Alt+Esc)<small>Jendela daftar aplikasi dengan tombol Paksa Keluar; aplikasi yang macet ditandai merah. Juga terbuka dari menu Apple di menu bar</small></span><input type="checkbox" id="o-fq"></div>
+        <button id="fqopen" style="width:100%;margin:2px 0 8px">Buka Paksa Keluar sekarang</button>
+
+        <div class="row"><span>Night Shift (Ctrl+Alt+W)<small>Menghangatkan warna layar dengan lapisan oranye tipis supaya lebih nyaman di malam hari. Ini lapisan di atas layar, bukan pengaturan warna kartu grafis, dan otomatis hilang saat game layar penuh</small></span><input type="checkbox" id="o-ns"></div>
+        <div id="nsbox">
+          <div class="slider"><div class="top"><span>Kehangatan</span><span id="v-nsw"></span></div><input type="range" id="o-nsw" min="5" max="80" value="40"></div>
+          <div class="row"><span>Pakai jadwal<small>Mati = menyala terus selama Night Shift aktif</small></span><input type="checkbox" id="o-nssch"></div>
+          <div class="two" style="margin-bottom:8px"><label class="note" style="margin:0">Mulai<br><input type="time" class="num" id="nsfrom" style="width:100%;text-align:left"></label><label class="note" style="margin:0">Selesai<br><input type="time" class="num" id="nsto" style="width:100%;text-align:left"></label></div>
+        </div>
+
+        <div class="row"><span>Screen Saver<small>Layar penuh saat komputer tidak disentuh. Gerakkan mouse atau tekan tombol apa saja untuk kembali. Tidak aktif saat game layar penuh atau ada suara diputar (butuh Dynamic Island aktif untuk deteksi suara)</small></span><input type="checkbox" id="o-ss"></div>
+        <div id="ssbox">
+          <div class="slider"><div class="top"><span>Mulai setelah</span><span id="v-ssmin"></span></div><input type="range" id="o-ssmin" min="1" max="60" value="5"></div>
+          <div class="seg4" style="grid-template-columns:repeat(3,1fr)"><button id="ss-drift" onclick="setSs('drift')">Drift</button><button id="ss-clock" onclick="setSs('clock')">Jam</button><button id="ss-text" onclick="setSs('text')">Pesan</button></div>
+          <div class="row"><span>Teks pesan<small>Dipakai gaya Pesan</small></span><input type="text" id="o-sstext" maxlength="80" placeholder="mis. Halo!" style="width:150px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:6px 8px;color:inherit;font:inherit"></div>
+        </div>
+        <button id="ssnow" style="width:100%;margin:2px 0 8px">Mulai Screen Saver sekarang</button>
+
+        <div class="row"><span>Catatan Cepat (Ctrl+Alt+Q)<small>Catatan kecil di pojok kanan bawah yang tersimpan otomatis. Esc untuk menutup</small></span><input type="checkbox" id="o-qn"></div>
+        <button id="qnopen" style="width:100%;margin:2px 0 4px">Buka Catatan Cepat sekarang</button>
+      </div>
+
+      <div class="card" id="fxhc" style="display:none">
+        <h2>Hot corners</h2>
+        <div class="row"><span>Pojok kiri atas<small>Arahkan kursor ke pojok layar dan tahan sebentar untuk memicu aksi</small></span><select id="hc_tl"></select></div>
+        <div class="row"><span>Pojok kanan atas</span><select id="hc_tr"></select></div>
+        <div class="row"><span>Pojok kiri bawah</span><select id="hc_bl"></select></div>
+        <div class="row"><span>Pojok kanan bawah</span><select id="hc_br"></select></div>
+      </div>
+
+      <div class="card" id="fx3" style="display:none">
+        <h2>Crosshair, kalender &amp; cuaca</h2>
+        <div class="row"><span>Crosshair di tengah layar<small>Garis bidik di tengah layar (Ctrl+Alt+X untuk nyala/mati cepat)</small></span><input type="checkbox" id="o-xh"></div>
+        <div id="xbox">
+          <div class="row"><span>Hanya saat game layar penuh</span><input type="checkbox" id="o-xhgame"></div>
+          <div class="seg4"><button id="xs-cross" onclick="setXs('cross')">Silang</button><button id="xs-dot" onclick="setXs('dot')">Titik</button><button id="xs-circle" onclick="setXs('circle')">Lingkaran</button><button id="xs-plus" onclick="setXs('plus')">Silang + titik</button></div>
+          <div class="row"><span>Warna</span><input type="color" id="o-xhcolor" value="#00ff66" style="width:46px;height:30px;border:0;background:none"></div>
+          <div class="slider"><div class="top"><span>Ukuran</span><span id="v-xhsize"></span></div><input type="range" id="o-xhsize" min="4" max="56" value="14"></div>
+          <div class="slider"><div class="top"><span>Ketebalan</span><span id="v-xhthick"></span></div><input type="range" id="o-xhthick" min="1" max="8" value="2"></div>
+          <div class="slider"><div class="top"><span>Celah tengah</span><span id="v-xhgap"></span></div><input type="range" id="o-xhgap" min="0" max="30" value="4"></div>
+          <div class="slider"><div class="top"><span data-t="Kepekatan garis">Kepekatan</span><span id="v-xhop"></span></div><input type="range" id="o-xhop" min="20" max="100" value="90"></div>
+        </div>
+        <div class="row" style="margin-top:8px"><span>Kalender &amp; cuaca<small>Ketuk pill (saat selalu tampil) atau tekan Ctrl+Alt+C</small></span><input type="checkbox" id="o-cal"></div>
+        <div class="row"><span>Kota untuk cuaca<small>Isi nama kota agar akurat. Kosong = perkiraan dari IP (bisa meleset)</small></span><input type="text" id="o-city" maxlength="60" placeholder="mis. Tangerang" style="width:150px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:inherit;padding:6px 8px"></div>
+        <button class="btn" onclick="ni('openCal')">Buka kalender sekarang</button>
+      </div>
+
+      <div class="card" id="hst" style="display:none">
+        <h2>Riwayat notifikasi</h2>
+        <div class="row" style="padding-top:0"><span>Simpan riwayat<small>Disimpan hanya di PC ini, maksimal 40 terakhir</small></span><input type="checkbox" id="histon"></div>
+        <div id="hlist" data-nt></div>
+        <button onclick="NI.clearHistory(); histKey=''; renderHist()" style="width:100%;margin-top:8px">Hapus riwayat</button>
+        <div class="note">Klik satu baris untuk menampilkannya lagi di island.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+/* ===== inti Dynamic Island (dipakai island.html dan pratinjau di halaman pengaturan) ===== */
+(function (g) {
+  var CSS = [
+    '.fxi{position:absolute;left:50%;transform:translate3d(-50%,0,0);will-change:width,height,opacity,scale;contain:layout style;backface-visibility:hidden;overflow:hidden;box-sizing:border-box;opacity:0;pointer-events:none;scale:1;transform-origin:50% 0;transition:opacity .16s ease,scale .12s ease-out;user-select:none;-webkit-user-select:none;cursor:default;font-family:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif}',
+    '.fxi.on{opacity:1;pointer-events:auto}',
+    '.fxi.rel{transition:opacity .16s ease,scale .3s cubic-bezier(.3,1.9,.5,1)}',
+    '.fxi-ct{position:absolute;top:0;left:50%;transform:translate3d(-50%,0,0);will-change:opacity,scale;box-sizing:border-box;padding:10px 18px;opacity:0;transform-origin:50% 0}',
+    '.fxr{display:flex;align-items:center;padding:8px 0}',
+    '.fxa{position:relative;width:48px;height:48px;flex:none}',
+    '.fxa .pic{position:absolute;left:0;top:0;width:44px;height:44px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#fff}',
+    '.fxa .pic img{width:100%;height:100%;object-fit:cover;display:block}',
+    '.fxa .bd{position:absolute;right:0;bottom:0;width:22px;height:22px}',
+    '.fxa .bd>div{position:absolute;left:2px;top:2px;right:2px;bottom:2px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;overflow:hidden}',
+    '.fxa .bd img{width:100%;height:100%;object-fit:cover;display:block}',
+    '.fxt{flex:1;min-width:0;margin-left:12px}',
+    '.fxl{display:flex;align-items:center}',
+    '.fxl b{flex:1;min-width:0;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.fxl i{font-style:normal;font-size:12px;margin-left:8px;flex:none}',
+    '.fxx{font-size:14px;line-height:1.28;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;word-break:break-word}',
+    '.fxx.one{-webkit-line-clamp:1}'
+  ].join('');
+
+  var SQ = (function () {
+    var p = [], n = 5, N = 72;
+    for (var i = 0; i < N; i++) {
+      var t = 2 * Math.PI * i / N, c = Math.cos(t), s = Math.sin(t);
+      var x = 50 + (c < 0 ? -1 : 1) * Math.pow(Math.abs(c), 2 / n) * 50;
+      var y = 50 + (s < 0 ? -1 : 1) * Math.pow(Math.abs(s), 2 / n) * 50;
+      p.push(x.toFixed(2) + '% ' + y.toFixed(2) + '%');
+    }
+    return 'polygon(' + p.join(',') + ')';
+  })();
+
+  function hueOf(s) { var h = 0; s = String(s || ''); for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360; return h; }
+  function letter(s) { s = String(s || '?').trim(); return (s.charAt(0) || '?').toUpperCase(); }
+  function grad(h) { return 'linear-gradient(135deg,hsl(' + h + ',72%,64%),hsl(' + ((h + 28) % 360) + ',62%,44%))'; }
+  function hexRgb(hex) { hex = String(hex || '#000000').replace('#', ''); if (hex.length === 3) hex = hex.replace(/(.)/g, '$1$1'); return [parseInt(hex.substr(0, 2), 16) || 0, parseInt(hex.substr(2, 2), 16) || 0, parseInt(hex.substr(4, 2), 16) || 0]; }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  g.makeIsland = function (host, o) {
+    o = o || {};
+    var C = { bg: '#000000', op: 100, cw: 110, ew: 340, dh: 0, top: 8, always: false, dur: 4500, edge: 'top' };
+    var entries = [], open = false, openingFx = false, hover = false, timer = null;
+    var S = { w: 0, h: 0, vw: 0, vh: 0, tw: 0, th: 0, run: false, last: 0, kw: 420, dw: 29, kh: 420, dh: 29 };
+    var tc = '#fff', sc = '#b0b0b8', dc = '#8e8e93', ring = '#000';
+    var downY = 0, glowRgb = null;
+
+    var st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
+    var isl = document.createElement('div'); isl.className = 'fxi';
+    var ct = document.createElement('div'); ct.className = 'fxi-ct';
+    isl.appendChild(ct); host.appendChild(isl);
+
+    function cH() { return Math.max(20, 32 + (+C.dh || 0)); }
+    function cW() { return Math.max(40, +C.cw || 110); }
+    function eW() { return Math.max(160, Math.min(+C.ew || 340, (host.clientWidth || 400) - 24)); }
+    function side() { return C.edge === 'left' || C.edge === 'right'; }
+    function pw() { return side() ? cH() : cW(); }   // lebar pill kecil (di tepi kiri/kanan pill berdiri tegak)
+    function ph() { return side() ? cW() : cH(); }
+    function rad(h, w) { return Math.min(h / 2, (w || 9999) / 2, 42); }
+
+    function style() {
+      var rgb = hexRgb(C.bg), a = clamp(+C.op || 100, 40, 100) / 100;
+      var lum = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
+      var light = lum > 0.6;
+      isl.style.background = 'rgba(' + rgb.join(',') + ',' + a + ')';
+      var gl = (C.glow && glowRgb && open) ? '0 0 26px 2px rgba(' + glowRgb.join(',') + ',.55),' : '';
+      isl.style.boxShadow = (lum > 0.12 ? 'inset 0 0 0 1px rgba(255,255,255,.3),' : '') + gl + '0 10px 24px rgba(0,0,0,.34),0 2px 6px rgba(0,0,0,.22)';
+      var m = Math.max(0, +C.top || 0) + 'px', e = C.edge || 'top', st = isl.style;
+      st.top = st.bottom = st.left = st.right = 'auto';
+      if (e === 'bottom') { st.bottom = m; st.left = '50%'; st.transform = 'translate3d(-50%,0,0)'; st.transformOrigin = '50% 100%'; }
+      else if (e === 'left') { st.left = m; st.top = '50%'; st.transform = 'translate3d(0,-50%,0)'; st.transformOrigin = '0 50%'; }
+      else if (e === 'right') { st.right = m; st.top = '50%'; st.transform = 'translate3d(0,-50%,0)'; st.transformOrigin = '100% 50%'; }
+      else { st.top = m; st.left = '50%'; st.transform = 'translate3d(-50%,0,0)'; st.transformOrigin = '50% 0'; }
+      ring = 'rgb(' + rgb.join(',') + ')';
+      tc = light ? '#1c1c1e' : '#ffffff';
+      sc = light ? '#55555c' : '#b0b0b8';
+      dc = light ? '#77777e' : '#8e8e93';
+    }
+
+    function applySize(w, h) {
+      isl.style.width = Math.max(1, w) + 'px';
+      isl.style.height = Math.max(1, h) + 'px';
+      isl.style.borderRadius = rad(h, w) + 'px';
+    }
+
+    /* ---------- baris notifikasi ---------- */
+    function squircle(el) { el.style.clipPath = SQ; el.style.webkitClipPath = SQ; }
+
+    function makeRow(e, single) {
+      var r = document.createElement('div'); r.className = 'fxr';
+      var a = document.createElement('div'); a.className = 'fxa';
+      var pic = document.createElement('div'); pic.className = 'pic';
+      var h = hueOf(e.app || e.title);
+      if (e.img) {
+        pic.style.borderRadius = '50%';
+        var im = document.createElement('img'); im.src = e.img; im.draggable = false; pic.appendChild(im);
+      } else if (e.icon) {
+        squircle(pic);
+        var im2 = document.createElement('img'); im2.src = e.icon; im2.draggable = false; pic.appendChild(im2);
+      } else {
+        squircle(pic); pic.style.background = grad(h); pic.textContent = letter(e.app || e.title);
+      }
+      a.appendChild(pic);
+      if (e.img && (e.icon || e.app)) {
+        var bd = document.createElement('div'); bd.className = 'bd'; bd.style.background = ring; squircle(bd);
+        var bi = document.createElement('div'); squircle(bi);
+        if (e.icon) { var bimg = document.createElement('img'); bimg.src = e.icon; bi.appendChild(bimg); }
+        else { bi.style.background = grad(h); bi.textContent = letter(e.app); }
+        bd.appendChild(bi); a.appendChild(bd);
+      }
+      var t = document.createElement('div'); t.className = 'fxt';
+      var l = document.createElement('div'); l.className = 'fxl';
+      var b = document.createElement('b'); b.style.color = tc; b.textContent = e.title || '';
+      var tm = document.createElement('i'); tm.style.color = dc; tm.textContent = e.time || 'sekarang';
+      l.appendChild(b); l.appendChild(tm); t.appendChild(l);
+      if (e.text) {
+        var x = document.createElement('div'); x.className = 'fxx' + (single ? '' : ' one'); x.style.color = sc; x.textContent = e.text; t.appendChild(x);
+      }
+      r.appendChild(a); r.appendChild(t);
+      return r;
+    }
+
+    function rebuild() {
+      ct.textContent = '';
+      var single = entries.length === 1;
+      for (var i = 0; i < entries.length; i++) ct.appendChild(makeRow(entries[i], single));
+      ct.style.width = eW() + 'px';
+    }
+
+    function contentH() {
+      ct.style.width = eW() + 'px';
+      return Math.max(64, ct.offsetHeight);
+    }
+
+    function rowIn(r, delay, fade) {
+      if (!r || !r.animate) return;
+      r.animate([{ transform: 'translateY(10px)', opacity: fade ? 0 : 1 }, { transform: 'none', opacity: 1 }],
+        { duration: 340, delay: delay, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'backwards' });
+      var av = r.firstChild;
+      if (av && av.animate) av.animate([{ transform: 'scale(.6)' }, { transform: 'scale(1)' }],
+        { duration: 420, delay: delay + 40, easing: 'cubic-bezier(.3,1.7,.5,1)', fill: 'backwards' });
+    }
+
+    /* ---------- pegas ---------- */
+    function springTo(w, h, opening) {
+      S.tw = w; S.th = h;
+      if (opening) { S.kw = 230; S.dw = 16; S.kh = 270; S.dh = 18; } else { S.kw = 420; S.dw = 29; S.kh = 420; S.dh = 29; }
+      if (!S.run) { S.run = true; S.last = 0; requestAnimationFrame(frame); }
+    }
+
+    function frame(t) {
+      if (!S.run) return;
+      var dt = S.last ? Math.min((t - S.last) / 1000, 1 / 30) : 1 / 60; S.last = t;
+      for (var i = 0; i < 4; i++) {
+        var d = dt / 4;
+        S.vw += (-S.kw * (S.w - S.tw) - S.dw * S.vw) * d; S.w += S.vw * d;
+        S.vh += (-S.kh * (S.h - S.th) - S.dh * S.vh) * d; S.h += S.vh * d;
+      }
+      var done = Math.abs(S.w - S.tw) < 0.4 && Math.abs(S.h - S.th) < 0.4 && Math.abs(S.vw) < 3 && Math.abs(S.vh) < 3;
+      if (done) {
+        S.w = S.tw; S.h = S.th; S.vw = 0; S.vh = 0; S.run = false;
+        if (openingFx) { openingFx = false; ct.style.opacity = 1; ct.style.scale = 1; }
+      }
+      applySize(S.w, S.h);
+      progress();
+      if (done) { if (!open && !C.always) { isl.classList.remove('on'); if (o.onIdle) o.onIdle(); } return; }
+      requestAnimationFrame(frame);
+    }
+
+    function progress() {
+      if (!openingFx) return;
+      var span = S.th - ph();
+      var p = span <= 0 ? 1 : (S.h - ph()) / span;
+      var t = clamp((p - 0.30) / 0.45, 0, 1), a = t * t * (3 - 2 * t);
+      ct.style.opacity = a; ct.style.scale = 0.9 + 0.1 * a;
+    }
+
+    function arm() {
+      clearTimeout(timer);
+      if (hover || !open) return;
+      timer = setTimeout(collapse, clamp(+C.dur || 4500, 2000, 20000));
+    }
+
+    function expandFresh() {
+      rebuild();
+      var h = contentH();
+      open = true; openingFx = true;
+      if (!S.w) { S.w = pw(); S.h = ph(); applySize(S.w, S.h); }
+      isl.classList.add('on');
+      ct.style.opacity = 0; ct.style.scale = 0.9;
+      for (var i = 0; i < ct.children.length; i++) rowIn(ct.children[i], 120 + i * 60, false);
+      springTo(eW(), h, true);
+      arm();
+    }
+
+    function pulse() {
+      isl.classList.remove('rel');
+      isl.style.scale = 1.035;
+      setTimeout(function () { isl.classList.add('rel'); isl.style.scale = 1; }, 110);
+    }
+
+    function collapse() {
+      clearTimeout(timer);
+      if (!open) return;
+      open = false; openingFx = false; glowRgb = null; style();
+      if (ct.animate) { ct.style.opacity = 0; } else ct.style.opacity = 0;
+      springTo(pw(), ph(), false);
+      if (o.onCollapse) o.onCollapse();
+    }
+
+    function tint(src) {
+      if (!src || !C.glow) { glowRgb = null; style(); return; }
+      var im = new Image();
+      im.onload = function () {
+        try {
+          var s = 20, cv = document.createElement('canvas'); cv.width = cv.height = s;
+          var cx = cv.getContext('2d'); cx.drawImage(im, 0, 0, s, s);
+          var d = cx.getImageData(0, 0, s, s).data, r = 0, g = 0, b = 0, n = 0;
+          for (var i = 0; i < d.length; i += 4) {
+            if (d[i + 3] < 200) continue;
+            var mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
+            if (mx - mn < 40) continue;            // abaikan abu-abu/putih/hitam, ambil warna yang berwarna
+            r += d[i]; g += d[i + 1]; b += d[i + 2]; n++;
+          }
+          glowRgb = n > 3 ? [Math.round(r / n), Math.round(g / n), Math.round(b / n)] : null;
+        } catch (x) { glowRgb = null; }
+        style();
+      };
+      im.onerror = function () { glowRgb = null; style(); };
+      im.src = src;
+    }
+
+    function show(e) {
+      tint(e.icon || e.img);
+      if (!open) entries = [];
+      entries.push(e);
+      while (entries.length > 3) entries.shift();
+      if (o.sound) { try { o.sound(e); } catch (x) {} }
+      if (!open) { expandFresh(); return; }
+      if (openingFx) { openingFx = false; ct.style.opacity = 1; ct.style.scale = 1; }
+      rebuild();
+      springTo(eW(), contentH(), true);
+      rowIn(ct.lastChild, 60, true);
+      pulse();
+      arm();
+    }
+
+    /* ---------- sentuhan ---------- */
+    isl.addEventListener('pointerdown', function (ev) {
+      downY = ev.clientY;
+      isl.classList.remove('rel'); isl.style.scale = 0.965;
+      try { isl.setPointerCapture(ev.pointerId); } catch (x) {}
+    });
+    function release() { isl.classList.add('rel'); isl.style.scale = 1; }
+    isl.addEventListener('pointercancel', release);
+    isl.addEventListener('pointerup', function (ev) {
+      release();
+      if (downY - ev.clientY > 18) { collapse(); return; }
+      var rc = isl.getBoundingClientRect();
+      if (ev.clientX < rc.left || ev.clientX > rc.right || ev.clientY < rc.top || ev.clientY > rc.bottom) return;
+      if (!open) { if (o.onPill) o.onPill(); return; }
+      var el = document.elementFromPoint(ev.clientX, ev.clientY), row = el && el.closest ? el.closest('.fxr') : null, idx = -1;
+      if (row) for (var i = 0; i < ct.children.length; i++) if (ct.children[i] === row) idx = i;
+      if (idx < 0) idx = entries.length - 1;
+      if (o.onTap) o.onTap(entries[idx], idx);
+      collapse();
+    });
+    isl.addEventListener('mouseenter', function () { hover = true; clearTimeout(timer); });
+    isl.addEventListener('mouseleave', function () { hover = false; arm(); });
+
+    /* ---------- konfigurasi ---------- */
+    function config(c) {
+      for (var k in c) if (c.hasOwnProperty(k)) C[k] = c[k];
+      style();
+      if (!open && !S.run) {
+        S.w = pw(); S.h = ph(); applySize(S.w, S.h);
+        if (C.always) isl.classList.add('on'); else if (!S.run) isl.classList.remove('on');
+      } else if (open) {
+        rebuild(); springTo(eW(), contentH(), true);
+      }
+    }
+    style(); S.w = pw(); S.h = ph(); applySize(S.w, S.h);
+
+    return {
+      config: config, show: show, collapse: collapse,
+      isOpen: function () { return open; },
+      rect: function () { return isl.classList.contains('on') ? isl.getBoundingClientRect() : null; },
+      el: isl
+    };
+  };
+})(window);
+</script>
+<script>
+var $ = function (id) { return document.getElementById(id); };
+var DEF = { hue:0, sat:0, lig:0, op:100, top:0, cw:110, ew:340, cx:0, dh:0, pill:true, edge:"top" };
+var PRESETS = ['#CDB4FF','#B5EAD7','#FFD3B6','#A0D8F1','#FFC8DD','#FFF1A8','#D9D9E8','#000000'];
+var cfg = Object.assign({}, DEF);
+try { Object.assign(cfg, JSON.parse(localStorage.getItem('di_win_cfg') || '{}')); } catch (e) {}
+function save() { try { localStorage.setItem('di_win_cfg', JSON.stringify(cfg)); } catch (e) {} }
+
+var NI = window.WinIsland || window.AndroidIsland || null;
+var IS_WIN = !!(NI && NI.platform === 'windows');
+function ni(fn) { try { if (NI && typeof NI[fn] === 'function') return NI[fn].apply(NI, Array.prototype.slice.call(arguments, 1)); } catch (e) {} }
+
+/* ===== bahasa / language ===== */
+var LANGS = [['id','Bahasa Indonesia'],['en','English'],['ms','Bahasa Melayu'],['ja','\u65e5\u672c\u8a9e'],['zh','\u7b80\u4f53\u4e2d\u6587'],['es','Espa\u00f1ol']];
+var LI = { en:0, ms:1, ja:2, zh:3, es:4 };
+var TR = {"Fitur macOS tambahan":["Extra macOS features","Ciri macOS tambahan","macOS 追加機能","额外的 macOS 功能","Funciones extra de macOS"],"Pengalih Aplikasi (Ctrl+Alt+S)":["Application Switcher (Ctrl+Alt+S)","Penukar Aplikasi (Ctrl+Alt+S)","アプリスイッチャー (Ctrl+Alt+S)","应用切换器 (Ctrl+Alt+S)","Selector de aplicaciones (Ctrl+Alt+S)"],"Buka Pengalih Aplikasi sekarang":["Open Application Switcher now","Buka Penukar Aplikasi sekarang","今すぐアプリスイッチャーを開く","立即打开应用切换器","Abrir el selector de aplicaciones ahora"],"Screenshot ala macOS":["macOS-style screenshots","Tangkapan skrin gaya macOS","macOS 風スクリーンショット","macOS 风格截屏","Capturas al estilo macOS"],"Thumbnail mengambang":["Floating thumbnail","Imej kecil terapung","フローティングサムネイル","悬浮缩略图","Miniatura flotante"],"Suara rana kamera":["Camera shutter sound","Bunyi pengatup kamera","シャッター音","相机快门声","Sonido de obturador"],"Salin juga ke papan klip":["Also copy to clipboard","Salin juga ke papan keratan","クリップボードにもコピー","同时复制到剪贴板","Copiar también al portapapeles"],"Seluruh layar":["Entire screen","Seluruh skrin","画面全体","整个屏幕","Pantalla completa"],"Area":["Selection","Kawasan","範囲","区域","Selección"],"Toolbar":["Toolbar","Bar alat","ツールバー","工具栏","Barra"],"Paksa Keluar Aplikasi (Ctrl+Alt+Esc)":["Force Quit Applications (Ctrl+Alt+Esc)","Paksa Keluar Aplikasi (Ctrl+Alt+Esc)","アプリを強制終了 (Ctrl+Alt+Esc)","强制退出应用程序 (Ctrl+Alt+Esc)","Forzar salida de aplicaciones (Ctrl+Alt+Esc)"],"Buka Paksa Keluar sekarang":["Open Force Quit now","Buka Paksa Keluar sekarang","今すぐ強制終了を開く","立即打开强制退出","Abrir Forzar salida ahora"],"Night Shift (Ctrl+Alt+W)":["Night Shift (Ctrl+Alt+W)","Night Shift (Ctrl+Alt+W)","Night Shift (Ctrl+Alt+W)","夜览 (Ctrl+Alt+W)","Night Shift (Ctrl+Alt+W)"],"Kehangatan":["Warmth","Kehangatan","暖かさ","色温","Calidez"],"Pakai jadwal":["Use schedule","Guna jadual","スケジュールを使う","使用计划","Usar horario"],"Mulai Screen Saver sekarang":["Start Screen Saver now","Mulakan Screen Saver sekarang","今すぐスクリーンセーバーを開始","立即启动屏幕保护程序","Iniciar el salvapantallas ahora"],"Mulai setelah":["Start after","Mula selepas","開始までの時間","启动等待时间","Iniciar tras"],"{n} mnt":["{n} min","{n} min","{n}分","{n} 分钟","{n} min"],"Teks pesan":["Message text","Teks mesej","メッセージテキスト","消息文字","Texto del mensaje"],"Buka Catatan Cepat sekarang":["Open Quick Note now","Buka Nota Pantas sekarang","今すぐクイックメモを開く","立即打开快速备忘录","Abrir Nota rápida ahora"],"Catatan Cepat (Ctrl+Alt+Q)":["Quick Note (Ctrl+Alt+Q)","Nota Pantas (Ctrl+Alt+Q)","クイックメモ (Ctrl+Alt+Q)","快速备忘录 (Ctrl+Alt+Q)","Nota rápida (Ctrl+Alt+Q)"],"Pusat Notifikasi":["Notification Center","Pusat Pemberitahuan","通知センター","通知中心","Centro de notificaciones"],"Tidurkan Layar":["Sleep Display","Tidurkan Skrin","ディスプレイをスリープ","让显示器休眠","Suspender pantalla"],"Pengalih Aplikasi":["Application Switcher","Penukar Aplikasi","アプリスイッチャー","应用切换器","Selector de aplicaciones"],"Tangkapan Layar":["Screenshot","Tangkapan Skrin","スクリーンショット","截屏","Captura de pantalla"],"Catatan Cepat":["Quick Note","Nota Pantas","クイックメモ","快速备忘录","Nota rápida"],"Kunci Layar":["Lock Screen","Kunci Skrin","画面をロック","锁定屏幕","Bloquear pantalla"],"Screen Saver":["Screen Saver","Screen Saver","スクリーンセーバー","屏幕保护程序","Salvapantallas"],"Badge notifikasi di Dock":["Notification badges in the Dock","Lencana pemberitahuan dalam Dock","Dock の通知バッジ","程序坞通知角标","Insignias de notificación en el Dock"],"Angka merah di ikon aplikasi yang mengirim notifikasi; hilang saat aplikasinya dibuka":["A red number on the icon of apps that send notifications; it disappears when you open the app","Nombor merah pada ikon aplikasi yang menghantar pemberitahuan; hilang apabila aplikasi dibuka","通知を送ったアプリのアイコンに赤い数字を表示します。アプリを開くと消えます","在发送通知的应用图标上显示红色数字；打开应用后消失","Un número rojo en el icono de las aplicaciones que envían notificaciones; desaparece al abrir la aplicación"],"Semua jendela yang terbuka dikecilkan jadi satu layar untuk dipilih. Pintasan: Ctrl+Alt+↑. Klik jendela untuk membukanya, tombol × untuk menutupnya, Esc untuk keluar":["All open windows shrink into a single screen to pick from. Shortcut: Ctrl+Alt+↑. Click a window to open it, the × button to close it, Esc to exit","Semua tetingkap yang dibuka dikecilkan menjadi satu skrin untuk dipilih. Pintasan: Ctrl+Alt+↑. Klik tetingkap untuk membukanya, butang × untuk menutupnya, Esc untuk keluar","開いているすべてのウィンドウを 1 つの画面に縮小して選べます。ショートカット: Ctrl+Alt+↑。ウィンドウをクリックで開く、×で閉じる、Escで終了","所有已打开的窗口会缩小到同一屏幕中供你选择。快捷键：Ctrl+Alt+↑。点击窗口即可打开，点击 × 关闭，按 Esc 退出","Todas las ventanas abiertas se reducen en una sola pantalla para elegir. Atajo: Ctrl+Alt+↑. Haz clic en una ventana para abrirla, en × para cerrarla y Esc para salir"],"Buka Mission Control sekarang":["Open Mission Control now","Buka Mission Control sekarang","今すぐ Mission Control を開く","立即打开 Mission Control","Abrir Mission Control ahora"],"Notifikasi Windows tampil di pulau hitam di atas layar, plus animasi buka & tutup jendela ala iOS.":["Windows notifications appear in a black island at the top of the screen, plus iOS-style window open & close animations.","Pemberitahuan Windows dipaparkan dalam pulau hitam di atas skrin, serta animasi buka & tutup tetingkap ala iOS.","Windows の通知が画面上部の黒いアイランドに表示されます。iOS 風のウィンドウ開閉アニメーションにも対応。","Windows 通知会显示在屏幕顶部的黑色“岛”中，并带有 iOS 风格的窗口打开与关闭动画。","Las notificaciones de Windows aparecen en una isla negra en la parte superior de la pantalla, con animaciones de apertura y cierre de ventanas al estilo iOS."],"Bahasa":["Language","Bahasa","言語","语言","Idioma"],"Pratinjau":["Preview","Pratonton","プレビュー","预览","Vista previa"],"Ini hanya contoh tampilan. Island sungguhan muncul di tengah atas layar utama Windows kamu.":["This is just a sample preview. The real island appears at the top center of your main Windows screen.","Ini hanya contoh paparan. Island sebenar muncul di tengah atas skrin utama Windows anda.","これは表示例です。実際のアイランドは Windows のメイン画面の上部中央に表示されます。","这只是示例预览。真正的岛会出现在 Windows 主屏幕的顶部中央。","Esto es solo una vista de ejemplo. La isla real aparece en el centro superior de la pantalla principal de Windows."],"Status":["Status","Status","ステータス","状态","Estado"],"Pembantu sistem":["System helper","Pembantu sistem","システムヘルパー","系统辅助程序","Ayudante del sistema"],"Program kecil pembaca notifikasi & jendela":["Small program that reads notifications & windows","Program kecil pembaca pemberitahuan & tetingkap","通知とウィンドウを読み取る小さなプログラム","读取通知和窗口的小程序","Pequeño programa que lee notificaciones y ventanas"],"Pembaca notifikasi Windows":["Windows notification reader","Pembaca pemberitahuan Windows","Windows 通知リーダー","Windows 通知读取器","Lector de notificaciones de Windows"],"Pemantau jendela (animasi)":["Window monitor (animation)","Pemantau tetingkap (animasi)","ウィンドウ監視（アニメーション）","窗口监视器（动画）","Monitor de ventanas (animación)"],"Daftar aplikasi terpasang":["Installed apps list","Senarai aplikasi dipasang","インストール済みアプリの一覧","已安装应用列表","Lista de aplicaciones instaladas"],"Pengaturan notifikasi Windows":["Windows notification settings","Tetapan pemberitahuan Windows","Windows の通知設定","Windows 通知设置","Ajustes de notificaciones de Windows"],"Kirim tes ke island asli":["Send test to the real island","Hantar ujian ke island sebenar","実際のアイランドにテスト送信","向真实的岛发送测试","Enviar prueba a la isla real"],"Island membaca notifikasi yang masuk ke Windows, jadi notifikasi asli Windows tetap muncul juga. Kalau mau hanya island: matikan banner notifikasi di Pengaturan Windows untuk aplikasi tertentu (island tetap menerimanya selama notifikasinya aktif). Island tidak muncul saat mode Jangan Ganggu / Focus aktif.":["The island reads notifications that arrive in Windows, so the original Windows notifications still appear too. If you want the island only: turn off notification banners in Windows Settings for specific apps (the island still receives them as long as the notifications are enabled). The island does not appear while Do Not Disturb / Focus mode is on.","Island membaca pemberitahuan yang masuk ke Windows, jadi pemberitahuan asal Windows tetap muncul juga. Jika mahu island sahaja: matikan sepanduk pemberitahuan dalam Tetapan Windows untuk aplikasi tertentu (island tetap menerimanya selagi pemberitahuan diaktifkan). Island tidak muncul semasa mod Jangan Ganggu / Focus aktif.","アイランドは Windows に届いた通知を読み取るため、Windows 本来の通知も引き続き表示されます。アイランドだけにしたい場合は、Windows の設定で特定のアプリの通知バナーをオフにしてください（通知が有効である限り、アイランドは受信できます）。サイレント（集中モード）がオンの間はアイランドは表示されません。","岛会读取发送到 Windows 的通知，因此 Windows 原有的通知仍会显示。如果只想使用岛：请在 Windows 设置中关闭特定应用的通知横幅（只要通知保持开启，岛仍能收到）。开启“勿扰 / 专注”模式时，岛不会显示。","La isla lee las notificaciones que llegan a Windows, por lo que las notificaciones originales de Windows también siguen apareciendo. Si solo quieres la isla: desactiva los avisos de notificación en Configuración de Windows para aplicaciones concretas (la isla las sigue recibiendo mientras las notificaciones estén activas). La isla no aparece cuando el modo No molestar / Asistente de concentración está activo."],"Notifikasi tes":["Test notification","Pemberitahuan ujian","テスト通知","测试通知","Notificación de prueba"],"💬 Pesan":["💬 Message","💬 Mesej","💬 メッセージ","💬 消息","💬 Mensaje"],"♪ Musik":["♪ Music","♪ Muzik","♪ 音楽","♪ 音乐","♪ Música"],"⏱ Timer":["⏱ Timer","⏱ Pemasa","⏱ タイマー","⏱ 计时器","⏱ Temporizador"],"Judul sendiri (opsional)":["Your own title (optional)","Tajuk sendiri (pilihan)","自分のタイトル（任意）","自定义标题（可选）","Título propio (opcional)"],"Isi pesan sendiri (opsional)":["Your own message (optional)","Mesej sendiri (pilihan)","自分のメッセージ（任意）","自定义内容（可选）","Mensaje propio (opcional)"],"Kirim notifikasi":["Send notification","Hantar pemberitahuan","通知を送信","发送通知","Enviar notificación"],"Ketuk island untuk menutup, geser ke atas juga menutup. Island tidak menutup sendiri selagi kursor ada di atasnya.":["Tap the island to close it; swiping up also closes it. The island does not close by itself while the cursor is over it.","Ketik island untuk menutup, leret ke atas juga menutup. Island tidak menutup sendiri selagi kursor berada di atasnya.","アイランドをタップすると閉じ、上にスワイプしても閉じます。カーソルが乗っている間は自動で閉じません。","点按岛即可关闭，向上滑动也可关闭。光标停在岛上时，它不会自动关闭。","Toca la isla para cerrarla; deslizar hacia arriba también la cierra. La isla no se cierra sola mientras el cursor esté encima."],"Warna":["Color","Warna","色","颜色","Color"],"Corak warna":["Hue","Corak warna","色相","色相","Tono"],"Kepekatan":["Saturation","Ketepuan","彩度","饱和度","Saturación"],"Terang":["Brightness","Kecerahan","明るさ","亮度","Brillo"],"Buram / tembus pandang":["Opacity","Kelegapan","不透明度","不透明度","Opacidad"],"Ukuran & posisi":["Size & position","Saiz & kedudukan","サイズと位置","大小与位置","Tamaño y posición"],"Posisi di layar (selalu di tengah tepi yang dipilih):":["Position on screen (always centered on the chosen edge):","Kedudukan pada skrin (sentiasa di tengah tepi yang dipilih):","画面上の位置（選んだ辺の中央に固定）:","屏幕位置（始终位于所选边缘的中央）：","Posición en pantalla (siempre centrada en el borde elegido):"],"⬆ Atas":["⬆ Top","⬆ Atas","⬆ 上","⬆ 上","⬆ Arriba"],"⬇ Bawah":["⬇ Bottom","⬇ Bawah","⬇ 下","⬇ 下","⬇ Abajo"],"⬅ Kiri":["⬅ Left","⬅ Kiri","⬅ 左","⬅ 左","⬅ Izquierda"],"➡ Kanan":["➡ Right","➡ Kanan","➡ 右","➡ 右","➡ Derecha"],"Jarak dari tepi layar":["Distance from screen edge","Jarak dari tepi skrin","画面端からの距離","距屏幕边缘的距离","Distancia al borde de la pantalla"],"Geser sepanjang tepi":["Slide along the edge","Gelongsor sepanjang tepi","辺に沿って移動","沿边缘移动","Deslizar a lo largo del borde"],"Tinggi pill":["Pill height","Ketinggian pill","ピルの高さ","胶囊高度","Alto de la píldora"],"Lebar pill (kecil)":["Pill width (small)","Lebar pill (kecil)","ピルの幅（小）","胶囊宽度（小）","Ancho de la píldora (pequeña)"],"Lebar saat melebar":["Expanded width","Lebar semasa dikembangkan","展開時の幅","展开时的宽度","Ancho al expandirse"],"Selalu tampilkan pill kecil":["Always show the small pill","Sentiasa papar pill kecil","小さなピルを常に表示","始终显示小胶囊","Mostrar siempre la píldora pequeña"],"Island tetap di layar, juga di atas aplikasi layar penuh, sampai kamu matikan. Kalau mati, island hanya muncul saat ada notifikasi":["The island stays on screen, even over fullscreen apps, until you turn it off. When off, the island only appears when there is a notification","Island kekal di skrin, juga di atas aplikasi skrin penuh, sehingga anda mematikannya. Jika dimatikan, island hanya muncul apabila ada pemberitahuan","オフにするまで、全画面アプリの上でもアイランドは画面に残ります。オフにすると、通知があるときだけ表示されます","岛会一直停留在屏幕上（包括全屏应用之上），直到你关闭。关闭后，只有收到通知时才会出现","La isla permanece en pantalla, incluso sobre aplicaciones a pantalla completa, hasta que la desactives. Si está desactivada, la isla solo aparece cuando hay una notificación"],"Kembalikan ke awal":["Reset to default","Set semula ke asal","初期状態に戻す","恢复默认","Restablecer valores"],"Animasi buka & tutup jendela":["Window open & close animation","Animasi buka & tutup tetingkap","ウィンドウ開閉アニメーション","窗口打开与关闭动画","Animación al abrir y cerrar ventanas"],"Animasi halus ala iOS (semua aplikasi)":["Smooth iOS-style animation (all apps)","Animasi lancar ala iOS (semua aplikasi)","iOS 風のなめらかなアニメーション（全アプリ）","iOS 风格的流畅动画（所有应用）","Animación fluida estilo iOS (todas las aplicaciones)"],"Kartu membesar dari taskbar saat jendela dibuka, mengecil saat ditutup":["The card grows from the taskbar when a window opens and shrinks when it closes","Kad membesar dari bar tugas apabila tetingkap dibuka, mengecil apabila ditutup","ウィンドウを開くとタスクバーからカードが拡大し、閉じると縮小します","打开窗口时卡片从任务栏放大，关闭时缩小","La tarjeta crece desde la barra de tareas al abrir una ventana y se encoge al cerrarla"],"Juga saat minimize & pulihkan":["Also when minimizing & restoring","Juga semasa minimize & pulihkan","最小化と復元のときも","最小化与还原时也启用","También al minimizar y restaurar"],"Efek tambahan di atas animasi bawaan Windows":["An extra effect on top of the built-in Windows animation","Kesan tambahan di atas animasi asal Windows","Windows 標準アニメーションに重ねる追加エフェクト","叠加在 Windows 自带动画之上的额外效果","Un efecto adicional sobre la animación integrada de Windows"],"▶ Coba animasi":["▶ Try animation","▶ Cuba animasi","▶ アニメーションを試す","▶ 试试动画","▶ Probar animación"],"Efek ini digambar di atas animasi bawaan Windows, bukan penggantinya, jadi pada beberapa PC terlihat berlapis. Jendela kecil, menu, dialog, dan popup diabaikan. Efek memantau jendela aplikasi lain, jadi tidak ikut menganimasikan jendela aplikasi ini sendiri.":["This effect is drawn on top of the built-in Windows animation, not as a replacement, so on some PCs it looks layered. Small windows, menus, dialogs, and popups are ignored. The effect watches other apps' windows, so it does not animate this app's own window.","Kesan ini dilukis di atas animasi asal Windows, bukan penggantinya, jadi pada sesetengah PC kelihatan berlapis. Tetingkap kecil, menu, dialog dan popup diabaikan. Kesan ini memantau tetingkap aplikasi lain, jadi tidak menganimasikan tetingkap aplikasi ini sendiri.","このエフェクトは Windows 標準アニメーションの代わりではなく、その上に重ねて描画されるため、PC によっては二重に見えることがあります。小さなウィンドウ、メニュー、ダイアログ、ポップアップは対象外です。他のアプリのウィンドウを監視する仕組みなので、このアプリ自身のウィンドウはアニメーションしません。","该效果绘制在 Windows 自带动画之上，而不是替代它，因此在某些电脑上可能看起来有叠加。小窗口、菜单、对话框和弹出窗口会被忽略。它监视的是其他应用的窗口，所以不会为本应用自己的窗口添加动画。","Este efecto se dibuja sobre la animación integrada de Windows, no la reemplaza, por lo que en algunos PC se ve superpuesto. Se ignoran las ventanas pequeñas, menús, diálogos y ventanas emergentes. El efecto vigila las ventanas de otras aplicaciones, así que no anima la ventana de esta misma aplicación."],"Aplikasi & suara":["Apps & sound","Aplikasi & bunyi","アプリとサウンド","应用与声音","Aplicaciones y sonido"],"Semua aplikasi":["All apps","Semua aplikasi","すべてのアプリ","所有应用","Todas las aplicaciones"],"Pilih sendiri":["Choose myself","Pilih sendiri","自分で選ぶ","自行选择","Elegir yo mismo"],"Cari aplikasi":["Search apps","Cari aplikasi","アプリを検索","搜索应用","Buscar aplicaciones"],"Pilih semua":["Select all","Pilih semua","すべて選択","全选","Seleccionar todo"],"Kosongkan":["Clear","Kosongkan","クリア","清空","Vaciar"],"Lama island terbuka":["Island open duration","Tempoh island terbuka","アイランドの表示時間","岛的展开时长","Duración de la isla abierta"],"Klik notifikasi membuka aplikasinya":["Clicking a notification opens its app","Klik pemberitahuan membuka aplikasinya","通知をクリックするとそのアプリを開く","点击通知会打开对应应用","Al hacer clic en una notificación se abre su aplicación"],"Suara saat notifikasi masuk":["Sound when a notification arrives","Bunyi apabila pemberitahuan masuk","通知が届いたときの音","收到通知时的声音","Sonido al llegar una notificación"],"Windows juga punya suara sendiri; matikan salah satu kalau dobel":["Windows has its own sound too; turn one off if it doubles up","Windows juga ada bunyi sendiri; matikan salah satu jika berganda","Windows にも独自の音があります。重複する場合はどちらかをオフにしてください","Windows 也有自己的提示音；如果重复，请关闭其中一个","Windows también tiene su propio sonido; desactiva uno si suena doble"],"Volume suara":["Sound volume","Kelantangan bunyi","音量","声音音量","Volumen del sonido"],"Nada:":["Tone:","Nada:","サウンド:","提示音：","Tono:"],"Bawaan Windows":["Windows default","Lalai Windows","Windows 標準","Windows 默认","Predeterminado de Windows"],"Pilih nada":["Choose tone","Pilih nada","サウンドを選ぶ","选择提示音","Elegir tono"],"mode_pilih_note":["Mode “Choose myself”: only the checked apps appear in the island. Apps not yet in the list appear automatically (marked <b>new</b>) after they have sent a notification.","Mod “Pilih sendiri”: hanya aplikasi yang ditanda muncul di island. Aplikasi yang belum ada dalam senarai muncul secara automatik (ditanda <b>baru</b>) selepas pernah menghantar pemberitahuan.","「自分で選ぶ」モード: チェックしたアプリだけがアイランドに表示されます。リストにないアプリは、通知を送信した後に自動で表示されます（<b>新規</b>のマーク付き）。","“自行选择”模式：只有勾选的应用会显示在岛上。列表中还没有的应用，在发送过通知后会自动出现（标记为<b>新</b>）。","Modo “Elegir yo mismo”: solo las aplicaciones marcadas aparecen en la isla. Las aplicaciones que aún no están en la lista aparecen automáticamente (marcadas como <b>nueva</b>) después de enviar una notificación."],"baru":["new","baru","新規","新","nueva"],"Fitur pintar":["Smart features","Ciri pintar","スマート機能","智能功能","Funciones inteligentes"],"Cahaya warna aplikasi":["App color glow","Cahaya warna aplikasi","アプリカラーの光","应用颜色光晕","Brillo con el color de la aplicación"],"Island berpendar sesuai warna ikon aplikasi pengirim":["The island glows in the color of the sending app's icon","Island bercahaya mengikut warna ikon aplikasi penghantar","送信元アプリのアイコンの色でアイランドが光ります","岛会按发送应用图标的颜色发光","La isla brilla con el color del icono de la aplicación emisora"],"Peringatan baterai & charger":["Battery & charger alerts","Amaran bateri & pengecas","バッテリーと充電器のアラート","电池与充电器提醒","Avisos de batería y cargador"],"Mengisi daya, dicabut, penuh, lemah (20%), kritis (10%)":["Charging, unplugged, full, low (20%), critical (10%)","Mengecas, dicabut, penuh, lemah (20%), kritikal (10%)","充電中、取り外し、満充電、低下（20%）、危険（10%）","充电中、已拔出、已充满、电量低（20%）、电量严重不足（10%）","Cargando, desconectado, completa, baja (20%), crítica (10%)"],"Pemberitahuan saat menyalin teks":["Notification when copying text","Pemberitahuan semasa menyalin teks","テキストをコピーしたときの通知","复制文本时通知","Aviso al copiar texto"],"Menampilkan cuplikan teks yang baru disalin (Ctrl+C). Isinya hanya tampil sesaat di layar.":["Shows a snippet of the text you just copied (Ctrl+C). The content only appears briefly on screen.","Memaparkan petikan teks yang baru disalin (Ctrl+C). Kandungannya hanya dipaparkan seketika di skrin.","コピーしたばかりのテキスト（Ctrl+C）の一部を表示します。内容は画面にほんの一瞬だけ表示されます。","显示刚复制（Ctrl+C）的文本片段。内容只会在屏幕上短暂显示。","Muestra un fragmento del texto recién copiado (Ctrl+C). El contenido solo aparece un instante en pantalla."],"Tombol pintas":["Keyboard shortcuts","Pintasan papan kekunci","ショートカットキー","快捷键","Atajos de teclado"],"Ctrl+Alt+N = jangan ganggu, Ctrl+Alt+I = tutup island":["Ctrl+Alt+N = do not disturb, Ctrl+Alt+I = close island","Ctrl+Alt+N = jangan ganggu, Ctrl+Alt+I = tutup island","Ctrl+Alt+N = サイレント、Ctrl+Alt+I = アイランドを閉じる","Ctrl+Alt+N = 勿扰，Ctrl+Alt+I = 关闭岛","Ctrl+Alt+N = no molestar, Ctrl+Alt+I = cerrar la isla"],"Jangan ganggu sekarang":["Do not disturb now","Jangan ganggu sekarang","今すぐサイレントにする","立即开启勿扰","No molestar ahora"],"Notifikasi tidak ditampilkan di island (tetap masuk riwayat)":["Notifications are not shown in the island (they still go to history)","Pemberitahuan tidak dipaparkan di island (tetap masuk sejarah)","通知はアイランドに表示されません（履歴には残ります）","通知不会显示在岛上（仍会进入历史记录）","Las notificaciones no se muestran en la isla (siguen en el historial)"],"Jam tenang otomatis":["Automatic quiet hours","Waktu senyap automatik","自動サイレント時間","自动静音时段","Horas de silencio automáticas"],"Mulai":["Start","Mula","開始","开始","Inicio"],"Selesai":["End","Tamat","終了","结束","Fin"],"Tampil di monitor:":["Show on monitor:","Papar pada monitor:","表示するモニター:","显示在哪个显示器：","Mostrar en el monitor:"],"Monitor utama":["Primary monitor","Monitor utama","メインモニター","主显示器","Monitor principal"],"Yang sedang dipakai":["The one in use","Yang sedang digunakan","使用中のモニター","当前使用的显示器","El que estás usando"],"Live activity & alat pintar":["Live activity & smart tools","Live activity & alat pintar","ライブアクティビティとスマートツール","实时活动与智能工具","Actividad en vivo y herramientas inteligentes"],"Pembantu tambahan":["Extra helper","Pembantu tambahan","追加ヘルパー","附加辅助程序","Ayudante adicional"],"Program kecil pembaca media, jaringan, mikrofon, dll":["Small program that reads media, network, microphone, etc.","Program kecil pembaca media, rangkaian, mikrofon, dll","メディア・ネットワーク・マイクなどを読み取る小さなプログラム","读取媒体、网络、麦克风等的小程序","Pequeño programa que lee medios, red, micrófono, etc."],"Jalan otomatis saat Windows menyala":["Start automatically when Windows starts","Berjalan automatik semasa Windows dihidupkan","Windows 起動時に自動で実行","Windows 启动时自动运行","Iniciar automáticamente al arrancar Windows"],"Setelah restart atau shutdown, island muncul lagi sendiri tanpa membuka jendela aplikasi":["After a restart or shutdown, the island comes back by itself without opening the app window","Selepas mula semula atau tutup, island muncul semula sendiri tanpa membuka tetingkap aplikasi","再起動やシャットダウンの後も、アプリのウィンドウを開かずにアイランドが自動で復帰します","重启或关机后，岛会自动重新出现，无需打开应用窗口","Tras reiniciar o apagar, la isla vuelve a aparecer sola sin abrir la ventana de la aplicación"],"Aktifkan live activity":["Enable live activity","Aktifkan live activity","ライブアクティビティを有効にする","启用实时活动","Activar actividad en vivo"],"Pill melebar menampilkan indikator di kiri & kanan; arahkan kursor untuk membuka detailnya":["The pill widens to show indicators on the left & right; hover to open the details","Pill melebar memaparkan penunjuk di kiri & kanan; halakan kursor untuk membuka butirannya","ピルが広がり、左右にインジケーターを表示します。カーソルを合わせると詳細が開きます","胶囊会变宽，在左右两侧显示指示器；将光标移上去可展开详情","La píldora se ensancha para mostrar indicadores a izquierda y derecha; pasa el cursor para abrir los detalles"],"Notifikasi saat aplikasi dibuka":["Notification when an app opens","Pemberitahuan apabila aplikasi dibuka","アプリを開いたときの通知","应用打开时通知","Aviso al abrir una aplicación"],"Tampil sebentar dengan ikon aplikasi":["Shows briefly with the app icon","Dipaparkan seketika dengan ikon aplikasi","アプリのアイコン付きでしばらく表示します","带应用图标短暂显示","Aparece un momento con el icono de la aplicación"],"Titik indikator rekam, mikrofon & kamera":["Recording, microphone & camera indicator dots","Titik penunjuk rakaman, mikrofon & kamera","録画・マイク・カメラのインジケーター","录制、麦克风与摄像头指示点","Puntos indicadores de grabación, micrófono y cámara"],"Merah = merekam layar, oranye = mikrofon, hijau = kamera, lengkap dengan notifikasi dan nama aplikasinya":["Red = screen recording, orange = microphone, green = camera, complete with a notification and the app's name","Merah = rakaman skrin, oren = mikrofon, hijau = kamera, lengkap dengan pemberitahuan dan nama aplikasinya","赤＝画面録画、オレンジ＝マイク、緑＝カメラ。通知とアプリ名も表示されます","红色＝录屏，橙色＝麦克风，绿色＝摄像头，并附带通知和应用名称","Rojo = grabación de pantalla, naranja = micrófono, verde = cámara, con notificación y el nombre de la aplicación"],"Pengendali media & indikator audio":["Media controls & audio indicator","Kawalan media & penunjuk audio","メディアコントロールとオーディオインジケーター","媒体控制与音频指示器","Controles de medios e indicador de audio"],"Judul lagu (Spotify, YouTube di browser, VLC), tombol putar/jeda/lanjut, gelombang mini saat kursor diarahkan":["Song title (Spotify, YouTube in the browser, VLC), play/pause/skip buttons, and a mini waveform when you hover","Tajuk lagu (Spotify, YouTube dalam pelayar, VLC), butang main/jeda/langkau, gelombang mini apabila kursor dihalakan","曲名（Spotify、ブラウザの YouTube、VLC）、再生/一時停止/スキップボタン、カーソルを合わせるとミニ波形を表示","歌曲标题（Spotify、浏览器中的 YouTube、VLC）、播放/暂停/下一首按钮，悬停时显示迷你波形","Título de la canción (Spotify, YouTube en el navegador, VLC), botones de reproducir/pausar/saltar y una mini onda al pasar el cursor"],"Notifikasi saat ada suara / lagu diputar":["Notification when sound / a song plays","Pemberitahuan apabila ada bunyi / lagu dimainkan","音や曲が再生されたときの通知","有声音 / 歌曲播放时通知","Aviso cuando suena audio / una canción"],"Banner judul lagu yang muncul setiap ada suara (misalnya YouTube). Matikan kalau mengganggu; pengendali media di pill tetap jalan":["A song-title banner that appears whenever there is sound (for example YouTube). Turn it off if it's annoying; the media controls in the pill keep working","Sepanduk tajuk lagu yang muncul setiap kali ada bunyi (contohnya YouTube). Matikan jika mengganggu; kawalan media di pill tetap berfungsi","音が出るたびに曲名のバナーを表示します（例: YouTube）。邪魔な場合はオフにしてください。ピルのメディアコントロールは引き続き使えます","每当有声音时（例如 YouTube）就会弹出歌曲标题横幅。如果觉得打扰可以关闭；胶囊中的媒体控制仍可使用","Un aviso con el título de la canción cada vez que hay sonido (por ejemplo, YouTube). Desactívalo si molesta; los controles de medios en la píldora siguen funcionando"],"Kecepatan internet":["Internet speed","Kelajuan internet","インターネット速度","网速","Velocidad de internet"],"Muncul otomatis saat unduhan besar (di atas 1,5 MB/dtk)":["Appears automatically during big downloads (above 1.5 MB/s)","Muncul secara automatik semasa muat turun besar (melebihi 1.5 MB/s)","大きなダウンロード中（1.5 MB/秒以上）に自動で表示されます","大文件下载时自动出现（超过 1.5 MB/秒）","Aparece automáticamente en descargas grandes (por encima de 1,5 MB/s)"],"Progres render & ekstrak":["Render & extract progress","Kemajuan render & ekstrak","レンダリングと解凍の進捗","渲染与解压进度","Progreso de renderizado y extracción"],"Dibaca dari persen di judul jendela (WinRAR, 7-Zip, penyalinan File Explorer, Media Encoder, dll)":["Read from the percentage in the window title (WinRAR, 7-Zip, File Explorer copying, Media Encoder, etc.)","Dibaca daripada peratus pada tajuk tetingkap (WinRAR, 7-Zip, penyalinan File Explorer, Media Encoder, dll)","ウィンドウタイトルの％表示から読み取ります（WinRAR、7-Zip、エクスプローラーのコピー、Media Encoder など）","从窗口标题中的百分比读取（WinRAR、7-Zip、文件资源管理器复制、Media Encoder 等）","Se lee del porcentaje en el título de la ventana (WinRAR, 7-Zip, copia del Explorador de archivos, Media Encoder, etc.)"],"FPS & ping saat bermain":["FPS & ping while gaming","FPS & ping semasa bermain","ゲーム中の FPS と ping","游戏时显示 FPS 与 ping","FPS y ping al jugar"],"Muncul hanya saat game aktif (Roblox, Valorant, game Steam/Epic/Riot, dll). Ketuk pill untuk detail. Game tak terdeteksi: tekan Ctrl+Alt+G di game itu":["Appears only while a game is active (Roblox, Valorant, Steam/Epic/Riot games, etc.). Tap the pill for details. Game not detected: press Ctrl+Alt+G in that game","Muncul hanya semasa permainan aktif (Roblox, Valorant, permainan Steam/Epic/Riot, dll). Ketik pill untuk butiran. Permainan tidak dikesan: tekan Ctrl+Alt+G dalam permainan itu","ゲームがアクティブなときだけ表示されます（Roblox、Valorant、Steam/Epic/Riot のゲームなど）。ピルをタップすると詳細が見られます。ゲームが検出されない場合は、そのゲーム上で Ctrl+Alt+G を押してください","仅在游戏处于活动状态时出现（Roblox、Valorant、Steam/Epic/Riot 游戏等）。点按胶囊可查看详情。未检测到游戏时：在该游戏中按 Ctrl+Alt+G","Aparece solo cuando hay un juego activo (Roblox, Valorant, juegos de Steam/Epic/Riot, etc.). Toca la píldora para ver detalles. Si no se detecta un juego: pulsa Ctrl+Alt+G dentro de ese juego"],"FPS akurat (PresentMon)":["Accurate FPS (PresentMon)","FPS tepat (PresentMon)","正確な FPS（PresentMon）","精确 FPS（PresentMon）","FPS precisos (PresentMon)"],"Membaca frame asli dari game, lengkap dengan 1% low. Perlu izin sekali saja":["Reads real frames from the game, including 1% low. Needs permission just once","Membaca bingkai sebenar daripada permainan, lengkap dengan 1% low. Perlu kebenaran sekali sahaja","ゲームの実際のフレームを読み取り、1% low も表示します。許可は一度だけ必要です","读取游戏的真实帧数，包含 1% low。只需授权一次","Lee los fotogramas reales del juego, incluido el 1% low. Solo necesita permiso una vez"],"Beri izin FPS (sekali, perlu admin)":["Grant FPS permission (once, needs admin)","Beri kebenaran FPS (sekali, perlu admin)","FPS の権限を付与（一度だけ、管理者権限が必要）","授予 FPS 权限（仅一次，需要管理员）","Conceder permiso de FPS (una vez, requiere administrador)"],"Kantong seret & lepas":["Drag & drop shelf","Rak seret & lepas","ドラッグ＆ドロップ置き場","拖放暂存区","Bandeja de arrastrar y soltar"],"Seret file, gambar, atau teks ke tengah atas layar, lalu tarik keluar ke aplikasi lain. Hanya untuk posisi island di atas":["Drag a file, image, or text to the top center of the screen, then drag it out into another app. Only for the island at the top position","Seret fail, gambar atau teks ke tengah atas skrin, kemudian tarik keluar ke aplikasi lain. Hanya untuk kedudukan island di atas","ファイル・画像・テキストを画面上部中央にドラッグし、そこから別のアプリへドラッグして出せます。アイランドが上にある場合のみ","将文件、图片或文本拖到屏幕顶部中央，再拖出到其他应用。仅适用于岛位于顶部时","Arrastra un archivo, imagen o texto al centro superior de la pantalla y luego sácalo hacia otra aplicación. Solo con la isla en la parte superior"],"Monitor CPU / RAM / GPU:":["CPU / RAM / GPU monitor:","Monitor CPU / RAM / GPU:","CPU / RAM / GPU モニター:","CPU / 内存 / GPU 监视：","Monitor de CPU / RAM / GPU:"],"Mati":["Off","Mati","オフ","关","Apagado"],"Saat lag":["When lagging","Semasa lag","ラグ時","卡顿时","Con lag"],"Selalu":["Always","Sentiasa","常に","始终","Siempre"],"Saat lag, island membesar dan menampilkan aplikasi paling berat memori dengan tombol End Task.":["When it lags, the island expands and shows the most memory-hungry apps with an End Task button.","Semasa lag, island membesar dan memaparkan aplikasi paling berat memori dengan butang End Task.","ラグが発生するとアイランドが広がり、メモリを最も使っているアプリを End Task ボタン付きで表示します。","卡顿时，岛会展开，并显示占用内存最多的应用及“结束任务”按钮。","Cuando hay lag, la isla se expande y muestra las aplicaciones que más memoria usan, con un botón de Finalizar tarea."],"Kursor kustom":["Custom cursor","Kursor tersuai","カスタムカーソル","自定义光标","Cursor personalizado"],"Mengganti kursor panah & tangan Windows. Kembali normal saat aplikasi ditutup":["Replaces the Windows arrow & hand cursors. Goes back to normal when the app is closed","Menggantikan kursor anak panah & tangan Windows. Kembali normal apabila aplikasi ditutup","Windows の矢印とハンドのカーソルを置き換えます。アプリを閉じると元に戻ります","替换 Windows 的箭头和手形光标。关闭应用后恢复正常","Reemplaza los cursores de flecha y mano de Windows. Vuelve a la normalidad al cerrar la aplicación"],"Panah":["Arrow","Anak panah","矢印","箭头","Flecha"],"Cincin":["Ring","Cincin","リング","圆环","Anillo"],"Titik":["Dot","Titik","ドット","圆点","Punto"],"Bidik":["Crosshair","Bidik","照準","准星","Mira"],"Warna kursor":["Cursor color","Warna kursor","カーソルの色","光标颜色","Color del cursor"],"Ukuran kursor":["Cursor size","Saiz kursor","カーソルのサイズ","光标大小","Tamaño del cursor"],"Crosshair, kalender & cuaca":["Crosshair, calendar & weather","Crosshair, kalendar & cuaca","クロスヘア、カレンダー、天気","准星、日历与天气","Mira, calendario y clima"],"Crosshair di tengah layar":["Crosshair in the screen center","Crosshair di tengah skrin","画面中央のクロスヘア","屏幕中央的准星","Mira en el centro de la pantalla"],"Garis bidik di tengah layar (Ctrl+Alt+X untuk nyala/mati cepat)":["Aiming lines in the screen center (Ctrl+Alt+X to quickly toggle)","Garisan bidik di tengah skrin (Ctrl+Alt+X untuk hidup/mati pantas)","画面中央に照準線を表示します（Ctrl+Alt+X で素早くオン/オフ）","在屏幕中央显示瞄准线（Ctrl+Alt+X 可快速开关）","Líneas de puntería en el centro de la pantalla (Ctrl+Alt+X para activar/desactivar rápido)"],"Hanya saat game layar penuh":["Only in fullscreen games","Hanya dalam permainan skrin penuh","全画面ゲームのときのみ","仅在全屏游戏时","Solo en juegos a pantalla completa"],"Silang":["Cross","Silang","クロス","十字","Cruz"],"Lingkaran":["Circle","Bulatan","円","圆圈","Círculo"],"Silang + titik":["Cross + dot","Silang + titik","クロス＋ドット","十字＋圆点","Cruz + punto"],"Ukuran":["Size","Saiz","サイズ","大小","Tamaño"],"Ketebalan":["Thickness","Ketebalan","太さ","粗细","Grosor"],"Celah tengah":["Center gap","Jurang tengah","中央の隙間","中心间隙","Espacio central"],"Kepekatan garis":["Opacity","Kelegapan","不透明度","不透明度","Opacidad"],"Kalender & cuaca":["Calendar & weather","Kalendar & cuaca","カレンダーと天気","日历与天气","Calendario y clima"],"Ketuk pill (saat selalu tampil) atau tekan Ctrl+Alt+C":["Tap the pill (when always shown) or press Ctrl+Alt+C","Ketik pill (semasa sentiasa dipaparkan) atau tekan Ctrl+Alt+C","ピル（常時表示時）をタップするか、Ctrl+Alt+C を押します","点按胶囊（在始终显示时）或按 Ctrl+Alt+C","Toca la píldora (cuando se muestra siempre) o pulsa Ctrl+Alt+C"],"Kota untuk cuaca":["City for weather","Bandar untuk cuaca","天気の都市","天气所用城市","Ciudad para el clima"],"Isi nama kota agar akurat. Kosong = perkiraan dari IP (bisa meleset)":["Enter a city name for accuracy. Empty = estimated from IP (may be off)","Isi nama bandar supaya tepat. Kosong = anggaran daripada IP (boleh tersasar)","正確にするため都市名を入力してください。空欄の場合は IP から推定します（ずれることがあります）","填写城市名称以获得准确结果。留空＝根据 IP 估算（可能不准）","Escribe el nombre de la ciudad para mayor precisión. Vacío = estimado por IP (puede fallar)"],"mis. Tangerang":["e.g. Tangerang","cth. Tangerang","例: Tangerang","例如 Tangerang","p. ej. Tangerang"],"Buka kalender sekarang":["Open calendar now","Buka kalendar sekarang","今すぐカレンダーを開く","立即打开日历","Abrir calendario ahora"],"Riwayat notifikasi":["Notification history","Sejarah pemberitahuan","通知履歴","通知历史","Historial de notificaciones"],"Simpan riwayat":["Save history","Simpan sejarah","履歴を保存","保存历史记录","Guardar historial"],"Disimpan hanya di PC ini, maksimal 40 terakhir":["Stored only on this PC, up to the last 40","Disimpan hanya pada PC ini, maksimum 40 terakhir","このPCにのみ保存され、最新の40件までです","仅保存在这台电脑上，最多保留最近 40 条","Se guarda solo en este PC, hasta los últimos 40"],"Hapus riwayat":["Clear history","Padam sejarah","履歴を削除","清除历史记录","Borrar historial"],"Klik satu baris untuk menampilkannya lagi di island.":["Click a row to show it again in the island.","Klik satu baris untuk memaparkannya semula di island.","行をクリックすると、もう一度アイランドに表示されます。","点击某一行即可在岛上再次显示。","Haz clic en una fila para mostrarla de nuevo en la isla."],"Siap":["Ready","Sedia","準備完了","就绪","Listo"],"Tidak ada":["None","Tiada","なし","无","Ninguno"],"Aktif":["Active","Aktif","有効","已启用","Activo"],"Menunggu":["Waiting","Menunggu","待機中","等待中","Esperando"],"Siaga":["Standby","Siap sedia","スタンバイ","待命","En espera"],"Memuat…":["Loading…","Memuatkan…","読み込み中…","加载中…","Cargando…"],"Belum":["Not yet","Belum","未設定","未就绪","Aún no"],"{n} aplikasi":["{n} apps","{n} aplikasi","{n} 個のアプリ","{n} 个应用","{n} aplicaciones"],"{n} aplikasi dipilih":["{n} apps selected","{n} aplikasi dipilih","{n} 個のアプリを選択中","已选择 {n} 个应用","{n} aplicaciones seleccionadas"],"Semua aplikasi ditampilkan di island":["All apps are shown in the island","Semua aplikasi dipaparkan di island","すべてのアプリがアイランドに表示されます","所有应用都会显示在岛上","Todas las aplicaciones se muestran en la isla"],"Matikan Dynamic Island":["Turn off Dynamic Island","Matikan Dynamic Island","Dynamic Island をオフにする","关闭 Dynamic Island","Desactivar Dynamic Island"],"Nyalakan Dynamic Island":["Turn on Dynamic Island","Hidupkan Dynamic Island","Dynamic Island をオンにする","开启 Dynamic Island","Activar Dynamic Island"],"Pembaca notifikasi: ":["Notification reader: ","Pembaca pemberitahuan: ","通知リーダー: ","通知读取器：","Lector de notificaciones: "],"{n} dtk":["{n} s","{n} s","{n} 秒","{n} 秒","{n} s"],"Belum ada notifikasi.":["No notifications yet.","Belum ada pemberitahuan.","まだ通知はありません。","还没有通知。","Aún no hay notificaciones."],"Pesan baru":["New message","Mesej baru","新着メッセージ","新消息","Mensaje nuevo"],"Hai! Island-nya jalan mulus 🎉":["Hi! The island runs smoothly 🎉","Hai! Island berjalan lancar 🎉","こんにちは！アイランドはスムーズに動いています 🎉","你好！岛运行很流畅 🎉","¡Hola! La isla funciona de maravilla 🎉"],"Pesan":["Messages","Mesej","メッセージ","消息","Mensajes"],"♪ Sedang diputar":["♪ Now playing","♪ Sedang dimainkan","♪ 再生中","♪ 正在播放","♪ Reproduciendo"],"Lagu favoritmu · Artis":["Your favorite song · Artist","Lagu kegemaran anda · Artis","お気に入りの曲 · アーティスト","你喜欢的歌 · 歌手","Tu canción favorita · Artista"],"Musik":["Music","Muzik","音楽","音乐","Música"],"⏱ Timer selesai":["⏱ Timer finished","⏱ Pemasa tamat","⏱ タイマー終了","⏱ 计时结束","⏱ Temporizador terminado"],"Waktunya istirahat sebentar":["Time for a short break","Masa untuk berehat seketika","ちょっと休憩の時間です","该休息一下了","Es hora de un breve descanso"],"Jam":["Clock","Jam","時計","时钟","Reloj"],"Notifikasi":["Notification","Pemberitahuan","通知","通知","Notificación"],"Tes":["Test","Ujian","テスト","测试","Prueba"],"Halo dari Windows":["Hello from Windows","Helo dari Windows","Windows からこんにちは","来自 Windows 的问候","Hola desde Windows"],"Dynamic Island aktif":["Dynamic Island is active","Dynamic Island aktif","Dynamic Island は有効です","Dynamic Island 已启用","Dynamic Island está activo"],"Fitur Windows (membaca notifikasi, animasi jendela, pilih aplikasi) tidak aktif: halaman ini tidak berjalan di dalam EXE Dynamic Island, atau EXE dibuat tanpa izin island. Pratinjau di atas tetap bisa dicoba.":["Windows features (reading notifications, window animation, choosing apps) are not active: this page is not running inside the Dynamic Island EXE, or the EXE was built without island permission. The preview above can still be tried.","Ciri Windows (membaca pemberitahuan, animasi tetingkap, pilih aplikasi) tidak aktif: halaman ini tidak berjalan di dalam EXE Dynamic Island, atau EXE dibina tanpa kebenaran island. Pratonton di atas masih boleh dicuba.","Windows 機能（通知の読み取り、ウィンドウアニメーション、アプリの選択）は無効です。このページが Dynamic Island の EXE 内で動作していないか、EXE がアイランドの権限なしでビルドされています。上のプレビューは引き続き試せます。","Windows 功能（读取通知、窗口动画、选择应用）未启用：此页面没有在 Dynamic Island 的 EXE 中运行，或该 EXE 构建时未包含岛权限。上方的预览仍可试用。","Las funciones de Windows (leer notificaciones, animación de ventanas, elegir aplicaciones) no están activas: esta página no se ejecuta dentro del EXE de Dynamic Island, o el EXE se creó sin permiso de isla. La vista previa de arriba aún se puede probar."],"Menu bar": ["Menu bar", "Bar menu", "メニューバー", "菜单栏", "Barra de menús"], "Adaptive Dock": ["Adaptive Dock", "Dock Adaptif", "アダプティブ Dock", "自适应程序坞", "Dock adaptable"], "Diperlukan: ikon Launchpad muncul di Dock (di sebelah ikon Start)": ["Required: the Launchpad icon appears in the Dock (next to the Start icon)", "Diperlukan: ikon Launchpad muncul dalam Dock (di sebelah ikon Start)", "必須: Launchpad アイコンが Dock（スタートアイコンの隣）に表示されます", "需要：Launchpad 图标会出现在程序坞中（在“开始”图标旁边）", "Requerido: el icono de Launchpad aparece en el Dock (junto al icono de Inicio)"], "Ikon Launchpad di Dock": ["Launchpad icon in the Dock", "Ikon Launchpad dalam Dock", "Dock の Launchpad アイコン", "程序坞中的 Launchpad 图标", "Icono de Launchpad en el Dock"], "Klik ikonnya untuk menampilkan grid semua aplikasi layar penuh": ["Click the icon to show a full-screen grid of all apps", "Klik ikonnya untuk memaparkan grid semua aplikasi skrin penuh", "アイコンをクリックすると、すべてのアプリを全画面のグリッドで表示します", "点击该图标即可以全屏网格显示所有应用", "Haz clic en el icono para ver una cuadrícula a pantalla completa con todas las aplicaciones"], "Dock menyesuaikan kebiasaanmu: aplikasi yang sering dipakai diurutkan paling depan, dan sampai 3 aplikasi favorit yang sedang tidak jalan muncul sebagai saran": ["The Dock adapts to your habits: frequently used apps are placed first, and up to 3 favorites that aren't running appear as suggestions", "Dock menyesuaikan tabiat anda: aplikasi yang kerap digunakan diletakkan paling depan, dan sehingga 3 kegemaran yang tidak berjalan dipaparkan sebagai cadangan", "Dock が使い方に合わせて変化します。よく使うアプリが先頭に並び、起動していないお気に入りアプリが最大 3 個まで候補として表示されます", "程序坞会适应你的使用习惯：常用应用排在最前面，最多 3 个未运行的常用应用会作为建议显示", "El Dock se adapta a tus hábitos: las aplicaciones más usadas van primero y hasta 3 favoritas que no están abiertas aparecen como sugerencias"], "Zona tata letak jendela": ["Window layout zones", "Zon susun atur tetingkap", "ウィンドウのレイアウトゾーン", "窗口布局区域", "Zonas de diseño de ventanas"], "Saat kamu menyeret jendela, deretan zona bernomor 1–8 muncul di sisi kanan layar (penuh, kiri, kanan, tengah, empat sudut). Lepas jendela di zona untuk menempatkannya. Butuh Dock aktif": ["When you drag a window, a row of numbered zones 1–8 appears on the right side of the screen (full, left, right, center, four corners). Drop the window in a zone to place it. Requires the Dock to be on", "Apabila anda menyeret tetingkap, barisan zon bernombor 1–8 muncul di sebelah kanan skrin (penuh, kiri, kanan, tengah, empat sudut). Lepaskan tetingkap di zon untuk meletakkannya. Memerlukan Dock aktif", "ウィンドウをドラッグすると、画面右側に 1〜8 の番号付きゾーン（全体・左・右・中央・四隅）が表示されます。ウィンドウをゾーンにドロップして配置します。Dock がオンである必要があります", "拖动窗口时，屏幕右侧会出现编号 1–8 的区域（全屏、左、右、居中、四个角）。将窗口放到区域中即可定位。需要开启程序坞", "Al arrastrar una ventana, aparece a la derecha de la pantalla una fila de zonas numeradas del 1 al 8 (completa, izquierda, derecha, centro y cuatro esquinas). Suelta la ventana en una zona para colocarla. Requiere el Dock activado"], "Buka Launchpad sekarang": ["Open Launchpad now", "Buka Launchpad sekarang", "今すぐ Launchpad を開く", "立即打开 Launchpad", "Abrir Launchpad ahora"], "Kotak pencarian di tengah layar: buka aplikasi, cari file, dan kalkulator cepat (contoh: 12*(3+4))": ["A search box in the middle of the screen: open apps, find files, and a quick calculator (example: 12*(3+4))", "Kotak carian di tengah skrin: buka aplikasi, cari fail, dan kalkulator pantas (contoh: 12*(3+4))", "画面中央の検索ボックス: アプリを開く、ファイルを探す、かんたん計算ができます（例: 12*(3+4)）", "屏幕中央的搜索框：打开应用、查找文件，还有快速计算器（例如：12*(3+4)）", "Un cuadro de búsqueda en el centro de la pantalla: abre aplicaciones, busca archivos y usa una calculadora rápida (ejemplo: 12*(3+4))"], "Cari file & folder": ["Search files & folders", "Cari fail & folder", "ファイルとフォルダーを検索", "搜索文件和文件夹", "Buscar archivos y carpetas"], "Desktop, Dokumen, Unduhan, Gambar, Musik, dan Video": ["Desktop, Documents, Downloads, Pictures, Music, and Videos", "Desktop, Dokumen, Muat Turun, Gambar, Muzik dan Video", "デスクトップ、ドキュメント、ダウンロード、ピクチャ、ミュージック、ビデオ", "桌面、文档、下载、图片、音乐和视频", "Escritorio, Documentos, Descargas, Imágenes, Música y Vídeos"], "Buka Spotlight sekarang": ["Open Spotlight now", "Buka Spotlight sekarang", "今すぐ Spotlight を開く", "立即打开 Spotlight", "Abrir Spotlight ahora"], "Ctrl+Space sedang dipakai aplikasi lain (misalnya pengalih bahasa/IME), jadi pintasan tidak aktif. Gunakan tombol di atas.": ["Ctrl+Space is being used by another app (for example a language switcher/IME), so the shortcut is inactive. Use the button above.", "Ctrl+Space sedang digunakan oleh aplikasi lain (contohnya penukar bahasa/IME), jadi pintasan tidak aktif. Gunakan butang di atas.", "Ctrl+Space は他のアプリ（言語切り替え/IME など）が使用中のため、ショートカットは無効です。上のボタンを使ってください。", "Ctrl+Space 正被其他应用占用（例如语言切换器/输入法），因此快捷键未启用。请使用上方的按钮。", "Ctrl+Space la está usando otra aplicación (por ejemplo, un cambiador de idioma/IME), así que el atajo no está activo. Usa el botón de arriba."], "Menu bar di atas layar": ["Menu bar at the top of the screen", "Bar menu di atas skrin", "画面上部のメニューバー", "屏幕顶部的菜单栏", "Barra de menús en la parte superior de la pantalla"], "Bar tipis ala macOS: nama aplikasi aktif, jam, baterai, Wi-Fi, dan volume (scroll di ikon volume untuk mengatur, klik untuk bisukan)": ["A thin macOS-style bar: active app name, clock, battery, Wi-Fi, and volume (scroll on the volume icon to adjust, click to mute)", "Bar nipis ala macOS: nama aplikasi aktif, jam, bateri, Wi-Fi dan kelantangan (skrol pada ikon kelantangan untuk melaras, klik untuk senyap)", "macOS 風の細いバー: アクティブなアプリ名、時計、バッテリー、Wi-Fi、音量（音量アイコンでスクロールして調整、クリックでミュート）", "macOS 风格的细条：当前应用名称、时钟、电池、Wi-Fi 和音量（在音量图标上滚动可调节，点击可静音）", "Una barra fina al estilo macOS: nombre de la aplicación activa, reloj, batería, Wi-Fi y volumen (desplaza sobre el icono de volumen para ajustar, haz clic para silenciar)"], "Sembunyikan menu bar": ["Hide the menu bar", "Sembunyikan bar menu", "メニューバーを隠す", "隐藏菜单栏", "Ocultar la barra de menús"], "Munculkan menu bar": ["Show the menu bar", "Munculkan bar menu", "メニューバーを表示", "显示菜单栏", "Mostrar la barra de menús"], "Control Center": ["Control Center", "Pusat Kawalan", "コントロールセンター", "控制中心", "Centro de control"], "Ikon di menu bar membuka panel cepat: Wi-Fi, mode gelap, jangan ganggu, kecerahan, dan volume": ["The icon in the menu bar opens a quick panel: Wi-Fi, dark mode, do not disturb, brightness, and volume", "Ikon dalam bar menu membuka panel pantas: Wi-Fi, mod gelap, jangan ganggu, kecerahan dan kelantangan", "メニューバーのアイコンでクイックパネルを開きます: Wi-Fi、ダークモード、サイレント、明るさ、音量", "菜单栏中的图标可打开快捷面板：Wi-Fi、深色模式、勿扰、亮度和音量", "El icono de la barra de menús abre un panel rápido: Wi-Fi, modo oscuro, no molestar, brillo y volumen"], "Buka Control Center sekarang": ["Open Control Center now", "Buka Pusat Kawalan sekarang", "今すぐコントロールセンターを開く", "立即打开控制中心", "Abrir el Centro de control ahora"], "Sisakan ruang di atas layar": ["Reserve space at the top of the screen", "Sisakan ruang di atas skrin", "画面上部にスペースを確保", "在屏幕顶部预留空间", "Reservar espacio en la parte superior de la pantalla"], "Jendela maksimal tidak menutupi menu bar": ["Maximized windows do not cover the menu bar", "Tetingkap maksimum tidak menutup bar menu", "最大化したウィンドウがメニューバーに重なりません", "最大化的窗口不会遮住菜单栏", "Las ventanas maximizadas no cubren la barra de menús"], "Format 24 jam": ["24-hour format", "Format 24 jam", "24 時間表示", "24 小时制", "Formato de 24 horas"], "Tampilkan tanggal": ["Show date", "Papar tarikh", "日付を表示", "显示日期", "Mostrar fecha"], "Tampilkan detik": ["Show seconds", "Papar saat", "秒を表示", "显示秒数", "Mostrar segundos"], "Game mode": ["Game mode", "Mod permainan", "ゲームモード", "游戏模式", "Modo juego"], "Game mode otomatis": ["Automatic Game mode", "Mod permainan automatik", "自動ゲームモード", "自动游戏模式", "Modo juego automático"], "Saat game terdeteksi (layar penuh, atau ditandai dengan Ctrl+Alt+G), aplikasi ini otomatis menjadi ringan: prioritas CPU diturunkan, prioritas game dinaikkan, Dock/menu bar/Spotlight berhenti bekerja di belakang, dan pemantau FPS PresentMon dimatikan. Kembali normal sendiri setelah keluar dari game.": ["When a game is detected (full screen, or marked with Ctrl+Alt+G), this app automatically becomes lightweight: CPU priority is lowered, the game's priority is raised, Dock/menu bar/Spotlight stop working in the background, and the PresentMon FPS monitor is turned off. It returns to normal by itself after you leave the game.", "Apabila permainan dikesan (skrin penuh, atau ditanda dengan Ctrl+Alt+G), aplikasi ini menjadi ringan secara automatik: keutamaan CPU diturunkan, keutamaan permainan dinaikkan, Dock/bar menu/Spotlight berhenti bekerja di latar belakang, dan pemantau FPS PresentMon dimatikan. Kembali normal sendiri selepas keluar daripada permainan.", "ゲームが検出されると（全画面、または Ctrl+Alt+G で指定）、このアプリは自動的に軽量モードになります。CPU の優先度が下がり、ゲームの優先度が上がり、Dock／メニューバー／Spotlight はバックグラウンドで停止し、PresentMon の FPS モニターもオフになります。ゲームを終了すると自動的に元に戻ります。", "检测到游戏时（全屏，或用 Ctrl+Alt+G 标记），本应用会自动进入轻量模式：降低 CPU 优先级、提高游戏优先级，程序坞/菜单栏/Spotlight 会在后台停止工作，PresentMon FPS 监视器也会关闭。退出游戏后会自动恢复正常。", "Cuando se detecta un juego (a pantalla completa, o marcado con Ctrl+Alt+G), esta aplicación se vuelve ligera automáticamente: baja la prioridad de CPU, sube la del juego, el Dock, la barra de menús y Spotlight dejan de funcionar en segundo plano y se apaga el monitor de FPS PresentMon. Vuelve a la normalidad sola al salir del juego."], "Status: menunggu game": ["Status: waiting for a game", "Status: menunggu permainan", "ステータス: ゲームを待機中", "状态：等待游戏", "Estado: esperando un juego"], "Status: AKTIF (game terdeteksi)": ["Status: ACTIVE (game detected)", "Status: AKTIF (permainan dikesan)", "ステータス: 有効（ゲームを検出）", "状态：已启用（检测到游戏）", "Estado: ACTIVO (juego detectado)"], "Deretan ikon aplikasi di tengah layar seperti Cmd+Tab. Tekan pintasannya lagi atau Tab untuk berpindah, Enter untuk memilih, Q untuk keluar dari aplikasi, H untuk menyembunyikan": ["A row of app icons in the middle of the screen, like Cmd+Tab. Press the shortcut again or Tab to move, Enter to select, Q to quit the app, H to hide it", "Barisan ikon aplikasi di tengah skrin seperti Cmd+Tab. Tekan pintasannya sekali lagi atau Tab untuk beralih, Enter untuk memilih, Q untuk keluar daripada aplikasi, H untuk menyembunyikan", "Cmd+Tab のように、画面中央にアプリのアイコンが並びます。ショートカットをもう一度押すか Tab で移動、Enter で選択、Q でアプリを終了、H で非表示にします", "屏幕中央会出现一排应用图标，类似 Cmd+Tab。再次按快捷键或按 Tab 切换，Enter 选择，Q 退出应用，H 隐藏应用", "Una fila de iconos de aplicaciones en el centro de la pantalla, como Cmd+Tab. Pulsa de nuevo el atajo o Tab para moverte, Enter para elegir, Q para salir de la aplicación y H para ocultarla"], "Ctrl+Shift+3 seluruh layar, Ctrl+Shift+4 area terpilih, Ctrl+Shift+5 toolbar dengan timer. Hasil disimpan ke Desktop dan thumbnail kecil muncul di pojok kanan bawah (klik untuk membuka, geser ke kanan untuk menutup)": ["Ctrl+Shift+3 entire screen, Ctrl+Shift+4 selected area, Ctrl+Shift+5 toolbar with timer. Results are saved to the Desktop and a small thumbnail appears in the bottom-right corner (click to open, swipe right to dismiss)", "Ctrl+Shift+3 seluruh skrin, Ctrl+Shift+4 kawasan dipilih, Ctrl+Shift+5 bar alat dengan pemasa. Hasil disimpan ke Desktop dan imej kecil muncul di penjuru kanan bawah (klik untuk membuka, leret ke kanan untuk menutup)", "Ctrl+Shift+3 で画面全体、Ctrl+Shift+4 で選択範囲、Ctrl+Shift+5 でタイマー付きツールバー。結果はデスクトップに保存され、右下に小さなサムネイルが表示されます（クリックで開く、右にスワイプで閉じる）", "Ctrl+Shift+3 截取整个屏幕，Ctrl+Shift+4 截取所选区域，Ctrl+Shift+5 打开带计时器的工具栏。结果保存到桌面，右下角会出现小缩略图（点击打开，向右滑动关闭）", "Ctrl+Shift+3 pantalla completa, Ctrl+Shift+4 área seleccionada, Ctrl+Shift+5 barra de herramientas con temporizador. Los resultados se guardan en el Escritorio y aparece una miniatura en la esquina inferior derecha (haz clic para abrir, desliza a la derecha para cerrar)"], "Selain disimpan ke Desktop, gambar langsung bisa ditempel (Ctrl+V)": ["Besides being saved to the Desktop, the image can be pasted right away (Ctrl+V)", "Selain disimpan ke Desktop, imej boleh terus ditampal (Ctrl+V)", "デスクトップへの保存に加えて、そのまま貼り付けられます（Ctrl+V）", "除了保存到桌面，图片还可以直接粘贴（Ctrl+V）", "Además de guardarse en el Escritorio, la imagen se puede pegar al instante (Ctrl+V)"], "Jendela daftar aplikasi dengan tombol Paksa Keluar; aplikasi yang macet ditandai merah. Juga terbuka dari menu Apple di menu bar": ["A window listing apps with a Force Quit button; frozen apps are marked in red. Also opens from the Apple menu in the menu bar", "Tetingkap senarai aplikasi dengan butang Paksa Keluar; aplikasi yang tersekat ditanda merah. Juga boleh dibuka daripada menu Apple di bar menu", "Force Quit ボタン付きのアプリ一覧ウィンドウ。応答しないアプリは赤く表示されます。メニューバーの Apple メニューからも開けます", "带有“强制退出”按钮的应用列表窗口；卡住的应用会标为红色。也可从菜单栏的 Apple 菜单打开", "Una ventana con la lista de aplicaciones y un botón de Forzar salida; las aplicaciones bloqueadas se marcan en rojo. También se abre desde el menú Apple de la barra de menús"], "Menghangatkan warna layar dengan lapisan oranye tipis supaya lebih nyaman di malam hari. Ini lapisan di atas layar, bukan pengaturan warna kartu grafis, dan otomatis hilang saat game layar penuh": ["Warms the screen colors with a thin orange overlay so it's more comfortable at night. This is a layer on top of the screen, not a graphics card color setting, and it disappears automatically during full-screen games", "Menghangatkan warna skrin dengan lapisan oren nipis supaya lebih selesa pada waktu malam. Ini lapisan di atas skrin, bukan tetapan warna kad grafik, dan hilang secara automatik semasa permainan skrin penuh", "薄いオレンジのオーバーレイで画面の色を暖かくし、夜でも見やすくします。画面の上に重ねる仕組みで、グラフィックスカードの色設定ではなく、全画面ゲーム中は自動的に消えます", "用一层薄薄的橙色覆盖层让屏幕颜色变暖，夜间更舒适。这是叠加在屏幕上的图层，不是显卡的色彩设置，全屏游戏时会自动消失", "Calienta los colores de la pantalla con una fina capa naranja para mayor comodidad por la noche. Es una capa sobre la pantalla, no un ajuste de color de la tarjeta gráfica, y desaparece automáticamente en juegos a pantalla completa"], "Mati = menyala terus selama Night Shift aktif": ["Off = stays on as long as Night Shift is active", "Mati = sentiasa menyala selagi Night Shift aktif", "オフ＝Night Shift が有効な間はずっとオン", "关＝只要 Night Shift 启用就一直开启", "Desactivado = permanece encendido mientras Night Shift esté activo"], "Layar penuh saat komputer tidak disentuh. Gerakkan mouse atau tekan tombol apa saja untuk kembali. Tidak aktif saat game layar penuh atau ada suara diputar (butuh Dynamic Island aktif untuk deteksi suara)": ["Full screen when the computer is untouched. Move the mouse or press any key to return. Inactive during full-screen games or while sound is playing (needs Dynamic Island on to detect sound)", "Skrin penuh apabila komputer tidak disentuh. Gerakkan tetikus atau tekan sebarang kekunci untuk kembali. Tidak aktif semasa permainan skrin penuh atau ada bunyi dimainkan (perlukan Dynamic Island aktif untuk mengesan bunyi)", "パソコンを操作していないとき全画面で表示されます。マウスを動かすか任意のキーを押すと戻ります。全画面ゲーム中や音が再生されている間は動作しません（音の検出には Dynamic Island がオンである必要があります）", "电脑闲置时全屏显示。移动鼠标或按任意键即可返回。全屏游戏或正在播放声音时不会启动（检测声音需要开启 Dynamic Island）", "Pantalla completa cuando no se toca el ordenador. Mueve el ratón o pulsa cualquier tecla para volver. No se activa durante juegos a pantalla completa ni mientras suena audio (necesita Dynamic Island activo para detectar el sonido)"], "Dipakai gaya Pesan": ["Used by the Messages style", "Digunakan gaya Mesej", "メッセージスタイルで使用", "用于“信息”样式", "Usado por el estilo Mensajes"], "Catatan kecil di pojok kanan bawah yang tersimpan otomatis. Esc untuk menutup": ["A small note in the bottom-right corner that saves automatically. Esc to close", "Nota kecil di penjuru kanan bawah yang disimpan secara automatik. Esc untuk menutup", "右下に表示される小さなメモで、自動保存されます。Esc で閉じます", "右下角的小便笺，会自动保存。按 Esc 关闭", "Una nota pequeña en la esquina inferior derecha que se guarda automáticamente. Esc para cerrar"], "Hot corners": ["Hot corners", "Sudut aktif", "ホットコーナー", "触发角", "Esquinas activas"], "Pojok kiri atas": ["Top-left corner", "Penjuru kiri atas", "左上の角", "左上角", "Esquina superior izquierda"], "Arahkan kursor ke pojok layar dan tahan sebentar untuk memicu aksi": ["Move the cursor to a screen corner and hold briefly to trigger an action", "Halakan kursor ke penjuru skrin dan tahan seketika untuk mencetuskan tindakan", "カーソルを画面の隅に動かして少しそのままにすると、アクションが実行されます", "将光标移到屏幕角落并稍等片刻即可触发操作", "Mueve el cursor a una esquina de la pantalla y mantenlo un momento para activar una acción"], "Pojok kanan atas": ["Top-right corner", "Penjuru kanan atas", "右上の角", "右上角", "Esquina superior derecha"], "Pojok kiri bawah": ["Bottom-left corner", "Penjuru kiri bawah", "左下の角", "左下角", "Esquina inferior izquierda"], "Pojok kanan bawah": ["Bottom-right corner", "Penjuru kanan bawah", "右下の角", "右下角", "Esquina inferior derecha"]};
+var LANG = 'id', WARN_ID = '';
+try { var _sl = localStorage.getItem('di_win_lang'); if (_sl === 'id' || LI[_sl] !== undefined) LANG = _sl; } catch (e) {}
+function t(k, v) {
+  var r = k;
+  if (LANG !== 'id' && TR[k]) r = TR[k][LI[LANG]] || TR[k][0] || k;
+  if (v) for (var n in v) r = r.split('{' + n + '}').join(v[n]);
+  return r;
+}
+
+/* ---- warna ---- */
+function hslToRgb(h, s, l) {
+  s /= 100; l /= 100; var a = s * Math.min(l, 1 - l);
+  function f(n) { var k = (n + h / 30) % 12; return Math.round(255 * (l - a * Math.max(-1, Math.min(k - 3, Math.min(9 - k, 1))))); }
+  return [f(0), f(8), f(4)];
+}
+function hexToHsl(hex) {
+  var r = parseInt(hex.substr(1, 2), 16) / 255, g = parseInt(hex.substr(3, 2), 16) / 255, b = parseInt(hex.substr(5, 2), 16) / 255;
+  var mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, h = 0, s = 0, d = mx - mn;
+  if (d) { s = d / (1 - Math.abs(2 * l - 1));
+    if (mx == r) h = ((g - b) / d) % 6; else if (mx == g) h = (b - r) / d + 2; else h = (r - g) / d + 4;
+    h *= 60; if (h < 0) h += 360; }
+  return { hue: h, sat: s * 100, lig: l * 100 };
+}
+function hexOf(c) { return '#' + c.map(function (v) { return v.toString(16).padStart(2, '0'); }).join('').toUpperCase(); }
+
+/* ---- pratinjau ---- */
+var pv = makeIsland($('stage'), { onPill: function () { send('msg'); } });
+function pvConfig() {
+  pv.config({ bg: hexOf(hslToRgb(cfg.hue, cfg.sat, cfg.lig)), op: cfg.op, cw: cfg.cw, ew: cfg.ew, dh: cfg.dh, top: Math.max(0, 12 + cfg.top), always: true, dur: 4500, edge: cfg.edge });
+  ['top','bottom','left','right'].forEach(function (e) { var b = $('ed-' + e); if (b) b.classList.toggle('on', cfg.edge === e); });
+}
+function paint() {
+  var rgb = hslToRgb(cfg.hue, cfg.sat, cfg.lig), cur = hexOf(rgb);
+  document.querySelectorAll('.sw').forEach(function (e) { e.classList.toggle('sel', e.dataset.c === cur); });
+  pvConfig();
+  ni('setStyle', cur, cfg.op, cfg.top, cfg.cw, cfg.ew, cfg.cx, cfg.dh);
+}
+var KEYS = ['hue','sat','lig','op','top','cw','ew','cx','dh'];
+var LIM = { hue:[0,360], sat:[0,100], lig:[0,100], op:[40,100], top:[-30,120], cx:[-300,300], dh:[-20,80], cw:[40,400], ew:[160,700] };
+var UNIT = { hue:'°', sat:'%', lig:'%', op:'%', top:' px', cx:' px', dh:' px', cw:' px', ew:' px' };
+function lim(k, v) { v = Number(v); if (!isFinite(v)) v = DEF[k]; return Math.max(LIM[k][0], Math.min(LIM[k][1], v)); }
+KEYS.forEach(function (k) { cfg[k] = lim(k, cfg[k]); });
+// kolom angka: ketik ukuran sendiri (tanpa harus menggeser slider)
+KEYS.forEach(function (k) {
+  var sp = $('v-' + (k === 'hue' ? 'h' : k === 'sat' ? 's' : k === 'lig' ? 'l' : k));
+  sp.textContent = '';
+  var n = document.createElement('input'); n.type = 'number'; n.className = 'num'; n.id = 'n-' + k;
+  n.min = LIM[k][0]; n.max = LIM[k][1]; n.step = 1; n.inputMode = 'numeric';
+  sp.appendChild(n); sp.appendChild(document.createTextNode(UNIT[k]));
+  n.addEventListener('input', function () {
+    if (n.value === '' || n.value === '-') return;
+    cfg[k] = lim(k, n.value); $(k).value = cfg[k]; paint(); save();
+  });
+  n.addEventListener('change', function () { cfg[k] = lim(k, n.value); syncUi(); paint(); save(); });
+});
+function syncUi() {
+  KEYS.forEach(function (k) {
+    $(k).value = cfg[k];
+    var n = $('n-' + k); if (document.activeElement !== n) n.value = Math.round(cfg[k]);
+  });
+  $('pill').checked = !!cfg.pill;
+}
+KEYS.forEach(function (k) {
+  $(k).addEventListener('input', function () { cfg[k] = +$(k).value; syncUi(); paint(); save(); });
+});
+PRESETS.forEach(function (c) {
+  var b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.title = c;
+  b.onclick = function () { var h = hexToHsl(c); cfg.hue = h.hue; cfg.sat = h.sat; cfg.lig = h.lig; syncUi(); paint(); save(); };
+  $('swatches').appendChild(b);
+});
+$('pill').onchange = function () { cfg.pill = this.checked; save(); ni('setPillAlways', cfg.pill); };
+function setEdge(e) { cfg.edge = e; paint(); save(); ni('setEdge', e); }
+function resetAll() { cfg = Object.assign({}, DEF); syncUi(); paint(); save(); ni('setPillAlways', true); ni('setEdge', 'top'); }
+
+/* ---- notifikasi tes ---- */
+var SAMPLES = {
+  msg:   { t:'Pesan baru', s:'Hai! Island-nya jalan mulus 🎉', a:'Pesan' },
+  music: { t:'♪ Sedang diputar', s:'Lagu favoritmu · Artis', a:'Musik' },
+  timer: { t:'⏱ Timer selesai', s:'Waktunya istirahat sebentar', a:'Jam' }
+};
+function send(type) {
+  var n = SAMPLES[type];
+  if (type === 'custom') n = { t: $('ct').value.trim() || t('Notifikasi'), s: $('cs').value.trim() || t('Notifikasi tes'), a: t('Tes') };
+  else n = { t: t(n.t), s: t(n.s), a: t(n.a) };
+  pv.show({ title: n.t, text: n.s, app: n.a });
+  ni('test', n.t, n.s);
+}
+
+/* ---- bagian khusus Windows ---- */
+function chip(id, ok, label, mid) { var e = $(id); e.textContent = label || (ok ? 'OK' : t('Belum')); e.className = 'chip' + (ok ? ' ok' : (mid ? ' mid' : '')); }
+var lastInfo = {};
+function poll() {
+  if (!IS_WIN) return;
+  try {
+    var i = JSON.parse(ni('getInfo') || '{}'); lastInfo = i;
+    var st = JSON.parse(ni('getState') || '{}');
+    chip('c-help', i.helper, i.helper ? t('Siap') : t('Tidak ada'));
+    var ok = i.notif && i.notif.ok;
+    chip('c-notif', ok, ok ? t('Aktif') : (i.enabled ? t('Menunggu') : t('Mati')), i.enabled && !ok);
+    chip('c-win', i.anim, i.anim ? t('Aktif') : t('Mati'));
+    if (i.sys) chip('c-sys', i.sys.ok, i.sys.ok ? t('Aktif') : (i.sys.exists ? t('Menunggu') : t('Tidak ada')), i.sys.exists && !i.sys.ok);
+    if (i.pm) chip('c-pm', i.pm.ok, i.pm.ok ? t('Aktif') : (i.pm.exists ? t('Siaga') : t('Tidak ada')), i.pm.exists && !i.pm.ok);
+    chip('c-apps', i.appsReady, i.appsReady ? t('{n} aplikasi', { n: i.nApps }) : t('Memuat…'), !i.appsReady);
+    $('tg').textContent = st.running ? t('Matikan Dynamic Island') : t('Nyalakan Dynamic Island');
+    $('nerr').innerHTML = (i.enabled && i.notif && i.notif.err) ? '<span class="err">' + t('Pembaca notifikasi: ') + String(i.notif.err).replace(/[<>&]/g, '') + '</span>' : '';
+    if (i.appsReady && !appsBuilt) buildApps();
+  } catch (e) {}
+}
+function nTog() {
+  try { var st = JSON.parse(ni('getState') || '{}'); if (st.running) ni('stop'); else ni('start'); } catch (e) {}
+  setTimeout(poll, 500);
+}
+
+/* daftar aplikasi */
+var FLT = { mode: 0, apps: {} }, appsBuilt = false;
+function fltSave() { ni('setFilter', FLT.mode, JSON.stringify(Object.keys(FLT.apps))); }
+function fltMode(m) {
+  FLT.mode = m;
+  $('m0').classList.toggle('on', m === 0); $('m1').classList.toggle('on', m === 1);
+  $('alist').classList.toggle('off', m === 0);
+  $('acount').textContent = acountTxt();
+  fltSave();
+}
+function acountTxt() { return FLT.mode === 1 ? t('{n} aplikasi dipilih', { n: Object.keys(FLT.apps).length }) : t('Semua aplikasi ditampilkan di island'); }
+function fltRows(fn) { Array.prototype.forEach.call($('alist').children, fn); }
+function fltAll(on) {
+  fltRows(function (r) {
+    if (r.style.display === 'none') return;
+    r.querySelector('input').checked = on;
+    if (on) FLT.apps[r.dataset.p] = 1; else delete FLT.apps[r.dataset.p];
+  });
+  fltMode(FLT.mode);
+}
+function hueOf(s) { var h = 0; s = String(s || ''); for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360; return h; }
+function buildApps() {
+  appsBuilt = true;
+  var list = []; try { list = JSON.parse(ni('getApps') || '[]'); } catch (e) {}
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function (es) {
+    es.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      var box = en.target; io.unobserve(box);
+      var p = box.dataset.p;
+      if (typeof NI.getIconAsync !== 'function') return;
+      NI.getIconAsync(p).then(function (src) {
+        if (!src) return;
+        var im = document.createElement('img'); im.src = src; box.querySelector('.ico').textContent = ''; box.querySelector('.ico').style.background = 'none'; box.querySelector('.ico').appendChild(im);
+      }).catch(function () {});
+    });
+  }, { root: $('alist'), rootMargin: '100px' }) : null;
+  var host = $('alist'); host.textContent = '';
+  list.forEach(function (a) {
+    var r = document.createElement('label'); r.className = 'app'; r.dataset.p = a.p; r.dataset.n = a.n.toLowerCase();
+    var ic = document.createElement('div'); ic.className = 'ico'; ic.textContent = (a.n.charAt(0) || '?').toUpperCase();
+    var h = hueOf(a.n); ic.style.background = 'linear-gradient(135deg,hsl(' + h + ',70%,62%),hsl(' + ((h + 28) % 360) + ',60%,44%))';
+    var sp = document.createElement('span'); sp.className = 'n'; sp.textContent = a.n;
+    var c = document.createElement('input'); c.type = 'checkbox'; c.checked = !!FLT.apps[a.p];
+    c.onchange = function () { if (c.checked) FLT.apps[a.p] = 1; else delete FLT.apps[a.p]; fltMode(FLT.mode); };
+    r.appendChild(ic); r.appendChild(sp);
+    if (a.s) { var nw = document.createElement('em'); nw.textContent = t('baru'); r.appendChild(nw); }
+    r.appendChild(c); host.appendChild(r);
+    if (io) io.observe(r);
+  });
+  var q = $('asr').value.trim().toLowerCase();
+  if (q) fltRows(function (r) { r.style.display = r.dataset.n.indexOf(q) >= 0 ? '' : 'none'; });
+  fltMode(FLT.mode);
+}
+
+/* suara */
+var SND = { uri: '', loaded: false, def: true };
+function sndUi() { $('v-sv').textContent = $('sv').value + '%'; $('sbox').classList.toggle('off', !$('snd').checked); }
+function sndList() {
+  var b = $('slist'), show = b.style.display === 'none';
+  b.style.display = show ? 'block' : 'none';
+  if (!show || SND.loaded) return;
+  SND.loaded = true;
+  var list = []; try { list = JSON.parse(ni('getSounds') || '[]'); } catch (e) {}
+  list.forEach(function (x) {
+    var r = document.createElement('label'); r.className = 'app';
+    var sp = document.createElement('span'); sp.className = 'n'; sp.textContent = x.t;
+    var c = document.createElement('input'); c.type = 'radio'; c.name = 'sndr'; c.checked = (x.u === SND.uri);
+    c.onchange = function () { SND.uri = x.u; SND.def = false; $('sname').textContent = x.t; ni('setSoundUri', x.u); ni('previewSound', x.u); };
+    r.appendChild(sp); r.appendChild(c); b.appendChild(r);
+  });
+}
+
+
+/* fitur pintar */
+function setMon(m) { $('mo0').classList.toggle('on', m === 'primary'); $('mo1').classList.toggle('on', m === 'cursor'); ni('setMonitor', m); }
+var histKey = '';
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+function renderHist() {
+  var l = []; try { l = JSON.parse(ni('getHistory') || '[]'); } catch (e) {}
+  var key = l.length + ':' + (l[0] ? l[0].t : 0);
+  if (key === histKey) return;
+  histKey = key;
+  var h = $('hlist');
+  if (!l.length) { h.innerHTML = '<div class="note" style="padding:10px 4px;margin:0">' + t('Belum ada notifikasi.') + '</div>'; return; }
+  h.innerHTML = l.map(function (x, i) {
+    var d = new Date(x.t), t = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    return '<div class="hrow" data-i="' + i + '"><time>' + t + '</time><div><b>' + esc(x.title) + ' <small style="color:var(--sub);font-weight:400">· ' + esc(x.app) + '</small></b><span>' + esc(x.text) + '</span></div></div>';
+  }).join('');
+  Array.prototype.forEach.call(h.children, function (r) { r.onclick = function () { ni('reshow', +r.dataset.i); }; });
+}
+function smartInit(f) {
+  $('smt').style.display = 'block'; $('hst').style.display = 'block';
+  $('glow').checked = f.glow !== false; $('bat').checked = f.bat !== false; $('clip').checked = f.clip === true;
+  $('hot').checked = f.hot !== false; $('dnd').checked = f.dnd === true; $('qon').checked = f.qon === true;
+  $('qfrom').value = f.qfrom || '22:00'; $('qto').value = f.qto || '07:00'; $('histon').checked = f.hist !== false;
+  setMon(f.mon === 'cursor' ? 'cursor' : 'primary');
+  function q() { $('qbox').classList.toggle('off', !$('qon').checked); ni('setQuiet', $('qon').checked, $('qfrom').value, $('qto').value); }
+  $('glow').onchange = function () { ni('setGlow', this.checked); };
+  $('bat').onchange = function () { ni('setBat', this.checked); };
+  $('clip').onchange = function () { ni('setClip', this.checked); };
+  $('hot').onchange = function () { ni('setHotkeys', this.checked); };
+  $('dnd').onchange = function () { ni('setDnd', this.checked); };
+  $('histon').onchange = function () { ni('setHistOn', this.checked); };
+  $('qon').onchange = q; $('qfrom').onchange = q; $('qto').onchange = q;
+  $('qbox').classList.toggle('off', !$('qon').checked);
+  renderHist(); setInterval(renderHist, 3000);
+}
+
+function setRmon(v) { [0, 1, 2].forEach(function (i) { $('r' + i).classList.toggle('on', i === v); }); ni('setOpt', 'rmon', v); }
+function setCs(v) { ['arrow', 'ring', 'dot', 'cross'].forEach(function (k) { $('cs-' + k).classList.toggle('on', k === v); }); ni('setOpt', 'cstyle', v); }
+function fx2Init(f) {
+  $('fx2').style.display = 'block';
+  var D = { fpsreal: true, auto: true, live: true, appnotif: true, devs: true, media: true, mtoast: true, net: true, prog: true, game: true, hub: true, curs: false };
+  Object.keys(D).forEach(function (k) {
+    var c = $('o-' + k); c.checked = f[k] === undefined ? D[k] : !!f[k];
+    c.onchange = function () { ni('setOpt', k, this.checked); if (k === 'curs') $('cbox').classList.toggle('off', !this.checked); };
+  });
+  var r = f.rmon === undefined ? 1 : f.rmon | 0; [0, 1, 2].forEach(function (i) { $('r' + i).classList.toggle('on', i === r); });
+  var st = f.cstyle || 'ring'; ['arrow', 'ring', 'dot', 'cross'].forEach(function (k) { $('cs-' + k).classList.toggle('on', k === st); });
+  $('o-ccolor').value = f.ccolor || '#ffffff'; $('o-csize').value = f.csize || 36; $('v-csize').textContent = $('o-csize').value + ' px';
+  $('o-ccolor').oninput = function () { ni('setOpt', 'ccolor', this.value); };
+  $('o-csize').oninput = function () { $('v-csize').textContent = this.value + ' px'; ni('setOpt', 'csize', +this.value); };
+  $('cbox').classList.toggle('off', !$('o-curs').checked);
+}
+
+function setXs(v) { ['cross', 'dot', 'circle', 'plus'].forEach(function (k) { $('xs-' + k).classList.toggle('on', k === v); }); ni('setOpt', 'xhstyle', v); }
+function fx6Init(f) {
+  $('fx6').style.display = 'block';
+  var dflt = { dock: false, lp: true, dbadge: true, dadapt: true, snapz: true };
+  Object.keys(dflt).forEach(function (k) {
+    var c = $('o-' + k); c.checked = f[k] === undefined ? dflt[k] : !!f[k];
+    c.onchange = function () { ni('setOpt', k, this.checked); };
+  });
+  $('lpopen').onclick = function () { ni('openLaunchpad'); };
+}
+function fx5Init(f) {
+  $('fx5').style.display = 'block';
+  var dflt = { spot: true, spotfiles: true };
+  Object.keys(dflt).forEach(function (k) {
+    var c = $('o-' + k); c.checked = f[k] === undefined ? dflt[k] : !!f[k];
+    c.onchange = function () { ni('setOpt', k, this.checked); if (k === 'spot') $('spbox').classList.toggle('off', !this.checked); };
+  });
+  $('spbox').classList.toggle('off', !$('o-spot').checked);
+  $('spopen').onclick = function () { ni('openSpot'); };
+  function warn(g) { $('spwarn').style.display = (g.spot !== false && g.spotkey === false) ? 'flex' : 'none'; }
+  warn(f);
+  setInterval(function () { try { warn(JSON.parse(ni('getFilter') || '{}')); } catch (e) {} }, 3000);
+}
+function fx4Init(f) {
+  $('fx4').style.display = 'block';
+  var dflt = { cc: true, mb: false, mbres: true, mb24: true, mbdate: true, mbsec: false };
+  Object.keys(dflt).forEach(function (k) {
+    var c = $('o-' + k); c.checked = f[k] === undefined ? dflt[k] : !!f[k];
+    c.onchange = function () { ni('setOpt', k, this.checked); if (k === 'mb') $('mbbox').classList.toggle('off', !this.checked); };
+  });
+  $('mbbox').classList.toggle('off', !$('o-mb').checked);
+  $('ccopen').onclick = function () { ni('openCc'); };
+  $('fxmc').style.display = 'block';
+  $('o-mc').checked = f.mc === undefined ? true : !!f.mc;
+  $('o-mc').onchange = function () { ni('setOpt', 'mc', this.checked); };
+  $('mcopen').onclick = function () { ni('openMc'); };
+  $('fxgm').style.display = 'block';
+  $('o-gmode').checked = f.gmode === undefined ? true : !!f.gmode;
+  $('o-gmode').onchange = function () { ni('setOpt', 'gmode', this.checked); };
+  setInterval(gmSt, 2000);
+  $('fxhc').style.display = 'block';
+  [['', 'Tidak ada'], ['lp', 'Launchpad'], ['mc', 'Mission Control'], ['cc', 'Control Center'], ['spot', 'Spotlight'], ['nc', 'Pusat Notifikasi'], ['sw', 'Pengalih Aplikasi'], ['shot', 'Tangkapan Layar'], ['qn', 'Catatan Cepat'], ['ss', 'Screen Saver'], ['lock', 'Kunci Layar'], ['dsleep', 'Tidurkan Layar']];
+  ['hc_tl', 'hc_tr', 'hc_bl', 'hc_br'].forEach(function (k) {
+    var sl = $(k);
+    [['', 'Tidak ada'], ['lp', 'Launchpad'], ['mc', 'Mission Control'], ['cc', 'Control Center'], ['spot', 'Spotlight'], ['nc', 'Pusat Notifikasi'], ['sw', 'Pengalih Aplikasi'], ['shot', 'Tangkapan Layar'], ['qn', 'Catatan Cepat'], ['ss', 'Screen Saver'], ['lock', 'Kunci Layar'], ['dsleep', 'Tidurkan Layar']].forEach(function (o) { var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; sl.appendChild(op); });
+    sl.value = f[k] || '';
+    sl.onchange = function () { ni('setOpt', k, this.value); };
+  });
+  var hid = !!f.mbhide;
+  function mbBtn() { $('mbtoggle').textContent = t(hid ? 'Munculkan menu bar' : 'Sembunyikan menu bar'); $('mbtoggle').classList.toggle('on', hid); }
+  window.mbBtnRefresh = mbBtn;
+  $('mbtoggle').onclick = function () { hid = !hid; ni('setOpt', 'mbhide', hid); mbBtn(); };
+  mbBtn();
+  setInterval(function () { try { var g = JSON.parse(ni('getFilter') || '{}'); if (!!g.mbhide !== hid) { hid = !!g.mbhide; mbBtn(); } } catch (e) {} }, 1500);
+}
+function setSs(v) { ['drift', 'clock', 'text'].forEach(function (k) { $('ss-' + k).classList.toggle('on', k === v); }); ni('setOpt', 'ssstyle', v); }
+function fx7Init(f) {
+  $('fx7').style.display = 'block';
+  var dflt = { asw: true, shot: true, shotthumb: true, shotsnd: true, shotclip: false, fq: true, ns: false, nssch: true, ss: false, qn: true };
+  Object.keys(dflt).forEach(function (k) {
+    var c = $('o-' + k); c.checked = f[k] === undefined ? dflt[k] : !!f[k];
+    c.onchange = function () {
+      ni('setOpt', k, this.checked);
+      if (k === 'shot') $('shbox').classList.toggle('off', !this.checked);
+      if (k === 'ns') $('nsbox').classList.toggle('off', !this.checked);
+      if (k === 'ss') $('ssbox').classList.toggle('off', !this.checked);
+    };
+  });
+  $('shbox').classList.toggle('off', !$('o-shot').checked);
+  $('nsbox').classList.toggle('off', !$('o-ns').checked);
+  $('ssbox').classList.toggle('off', !$('o-ss').checked);
+  var nsw = $('o-nsw'); nsw.value = f.nsw == null ? 40 : f.nsw; $('v-nsw').textContent = nsw.value + '%';
+  nsw.oninput = function () { $('v-nsw').textContent = this.value + '%'; ni('setOpt', 'nsw', +this.value); };
+  var ssm = $('o-ssmin'); ssm.value = f.ssmin == null ? 5 : f.ssmin; $('v-ssmin').textContent = t('{n} mnt', { n: ssm.value });
+  ssm.oninput = function () { $('v-ssmin').textContent = t('{n} mnt', { n: this.value }); ni('setOpt', 'ssmin', +this.value); };
+  $('nsfrom').value = f.nsfrom || '21:00'; $('nsto').value = f.nsto || '07:00';
+  $('nsfrom').onchange = function () { if (this.value) ni('setOpt', 'nsfrom', this.value); };
+  $('nsto').onchange = function () { if (this.value) ni('setOpt', 'nsto', this.value); };
+  var st = f.ssstyle || 'drift'; ['drift', 'clock', 'text'].forEach(function (k) { $('ss-' + k).classList.toggle('on', k === st); });
+  $('o-sstext').value = f.sstext || ''; $('o-sstext').onchange = function () { ni('setOpt', 'sstext', this.value); };
+  $('swopen').onclick = function () { ni('openSwitcher'); };
+  $('fqopen').onclick = function () { ni('openForceQuit'); };
+  $('shfull').onclick = function () { ni('shotFull'); };
+  $('sharea').onclick = function () { ni('shotArea'); };
+  $('shbar').onclick = function () { ni('shotBar'); };
+  $('ssnow').onclick = function () { ni('startSaver'); };
+  $('qnopen').onclick = function () { ni('openNote'); };
+}
+function fx3Init(f) {
+  $('fx3').style.display = 'block';
+  ['xh', 'xhgame', 'cal'].forEach(function (k) { var c = $('o-' + k); c.checked = f[k] === undefined ? (k === 'cal') : !!f[k]; c.onchange = function () { ni('setOpt', k, this.checked); if (k === 'xh') $('xbox').classList.toggle('off', !this.checked); }; });
+  $('xbox').classList.toggle('off', !$('o-xh').checked);
+  var st = f.xhstyle || 'cross'; ['cross', 'dot', 'circle', 'plus'].forEach(function (k) { $('xs-' + k).classList.toggle('on', k === st); });
+  $('o-xhcolor').value = f.xhcolor || '#00ff66'; $('o-xhcolor').oninput = function () { ni('setOpt', 'xhcolor', this.value); };
+  [['xhsize', 14, ' px'], ['xhthick', 2, ' px'], ['xhgap', 4, ' px'], ['xhop', 90, '%']].forEach(function (a) {
+    var r = $('o-' + a[0]); r.value = f[a[0]] == null ? a[1] : f[a[0]]; $('v-' + a[0]).textContent = r.value + a[2];
+    r.oninput = function () { $('v-' + a[0]).textContent = this.value + a[2]; ni('setOpt', a[0], +this.value); };
+  });
+  var ci = $('o-city'); ci.value = f.city || ''; ci.onchange = function () { ni('setOpt', 'city', this.value); };
+}
+
+function nativeInit() {
+  $('nat').style.display = 'block'; $('anm').style.display = 'block'; $('flt').style.display = 'block'; $('pillrow').style.display = 'flex';
+  var f = {}; try { f = JSON.parse(ni('getFilter') || '{}'); } catch (e) {}
+  FLT.mode = f.mode | 0;
+  (f.apps || []).forEach(function (p) { FLT.apps[p] = 1; });
+  $('anim').checked = f.anim === true; $('animmin').checked = f.animmin === true;
+  $('snd').checked = f.snd === true; $('tap').checked = f.tapopen !== false;
+  $('dur').value = (f.dur || 4500) / 1000; $('v-dur').textContent = t('{n} dtk', { n: $('dur').value });
+  SND.uri = f.suri || ''; SND.def = !f.sname; $('sname').textContent = f.sname || t('Bawaan Windows'); $('sv').value = f.svol || 100;
+  if (typeof f.pill === 'boolean') { cfg.pill = f.pill; syncUi(); }
+  if (f.edge) { cfg.edge = f.edge; paint(); }
+  $('anim').onchange = function () { ni('setAnim', this.checked); poll(); };
+  $('animmin').onchange = function () { ni('setAnimMin', this.checked); };
+  $('snd').onchange = function () { ni('setSound', this.checked); sndUi(); };
+  $('tap').onchange = function () { ni('setTapOpen', this.checked); };
+  $('dur').oninput = function () { $('v-dur').textContent = t('{n} dtk', { n: this.value }); ni('setDuration', Math.round(+this.value * 1000)); };
+  $('sv').oninput = function () { ni('setSoundVol', +this.value); sndUi(); };
+  $('sv').onchange = function () { ni('previewSound', SND.uri); };
+  $('asr').oninput = function () {
+    var q = this.value.trim().toLowerCase();
+    fltRows(function (r) { r.style.display = (!q || r.dataset.n.indexOf(q) >= 0) ? '' : 'none'; });
+  };
+  sndUi(); fltMode(FLT.mode);
+  smartInit(f); fx2Init(f); fx3Init(f); fx4Init(f); fx5Init(f); fx6Init(f); fx7Init(f);
+  poll(); setInterval(poll, 1500);
+}
+
+syncUi(); paint();
+if (IS_WIN) nativeInit();
+else {
+  var d = document.createElement('div'); d.className = 'warn';
+  WARN_ID = 'Fitur Windows (membaca notifikasi, animasi jendela, pilih aplikasi) tidak aktif: halaman ini tidak berjalan di dalam EXE Dynamic Island, atau EXE dibuat tanpa izin island. Pratinjau di atas tetap bisa dicoba.'; d.id = 'warnmsg'; d.setAttribute('data-nt', ''); d.textContent = t(WARN_ID);
+  var h = document.querySelector('header'); h.parentNode.insertBefore(d, h.nextSibling);
+}
+
+/* ---- terapkan bahasa ke halaman ---- */
+var SKIP = '[data-nt],[data-h],[data-t]';
+function i18nApply() {
+  document.documentElement.lang = LANG;
+  document.title = t('SyhabOS');
+  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), list = [], n;
+  while ((n = w.nextNode())) list.push(n);
+  list.forEach(function (n) {
+    var p = n.parentNode;
+    if (!p || p.nodeName === 'SCRIPT' || p.nodeName === 'STYLE' || (p.closest && p.closest(SKIP))) return;
+    if (n._o === undefined) { if (!n.nodeValue.trim()) return; n._o = n.nodeValue; }
+    var o = n._o, lead = o.match(/^\s*/)[0], trail = o.match(/\s*$/)[0];
+    n.nodeValue = lead + t(o.trim()) + trail;
+  });
+  document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(function (e) {
+    ['placeholder', 'title', 'aria-label'].forEach(function (a) {
+      if (!e.hasAttribute(a)) return;
+      e._oa = e._oa || {};
+      if (e._oa[a] === undefined) e._oa[a] = e.getAttribute(a);
+      e.setAttribute(a, t(e._oa[a]));
+    });
+  });
+  document.querySelectorAll('[data-t]').forEach(function (e) {
+    if (e._ot === undefined) e._ot = e.textContent;
+    e.textContent = LANG === 'id' ? e._ot : t(e.getAttribute('data-t'));
+  });
+  document.querySelectorAll('[data-h]').forEach(function (e) {
+    if (e._oh === undefined) e._oh = e.innerHTML;
+    e.innerHTML = LANG === 'id' ? e._oh : t(e.getAttribute('data-h'));
+  });
+}
+/* ---- teks yang dibuat JavaScript ikut diganti ---- */
+function gmSt() {
+  var g = {};
+  try { if (IS_WIN) g = JSON.parse(ni('getFilter') || '{}'); } catch (e) {}
+  $('gmst').textContent = t(g.gm ? 'Status: AKTIF (game terdeteksi)' : 'Status: menunggu game');
+}
+function i18nDyn() {
+  var wm = $('warnmsg'); if (wm) wm.textContent = t(WARN_ID);
+  gmSt();
+  if (window.mbBtnRefresh) window.mbBtnRefresh();
+  if (IS_WIN) {
+    if (SND.def) $('sname').textContent = t('Bawaan Windows');
+    $('v-dur').textContent = t('{n} dtk', { n: $('dur').value });
+    $('acount').textContent = acountTxt();
+    Array.prototype.forEach.call(document.querySelectorAll('#alist em'), function (em) { em.textContent = t('baru'); });
+    histKey = ''; renderHist();
+    poll();
+  }
+}
+(function () {
+  var sel = $('lang');
+  LANGS.forEach(function (l) { var o = document.createElement('option'); o.value = l[0]; o.textContent = l[1]; sel.appendChild(o); });
+  sel.value = LANG;
+  sel.onchange = function () {
+    LANG = this.value;
+    try { localStorage.setItem('di_win_lang', LANG); } catch (e) {}
+    i18nApply(); i18nDyn(); ni('setOpt', 'lang', LANG);
+  };
+  i18nApply(); i18nDyn();
+  if (IS_WIN) ni('setOpt', 'lang', LANG);
+})();
+setTimeout(function () { send('msg'); }, 700);
+</script>
+</body>
+</html>
